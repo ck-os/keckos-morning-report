@@ -27,19 +27,22 @@
   Design: neutral-black Art Deco dark theme (NOT the blue KeckOS report
   palette, and NOT the earlier warm sepia/parchment pass -- see :root),
   Playfair Display serif masthead, a real newspaper dateline, then (top
-  to bottom) a splash, a 3-item index-strip teasing each story section,
-  "The Wire" dense digest, a "Markets at a Glance" ticker strip, and the
-  three story sections themselves (kicker/headline/deck/byline, a
-  2-column drop-cap body, an optional pull-quote, and an optional
-  figure-box with cutline). Committed to a single dark theme
+  to bottom) a splash, a "Markets at a Glance" ticker strip, "The Wire"
+  dense digest, and the three story sections themselves
+  (kicker/headline/deck/byline, a 2-column drop-cap body, an optional
+  pull-quote, and an optional figure-box with cutline). The 3-item
+  index-strip that used to sit between the splash and The Wire (one
+  teaser card per story section) was removed 2026-08-19 -- it duplicated
+  the splash and story headlines just below it, per user feedback.
+  Committed to a single dark theme
   deliberately, same as every other KeckOS report -- no light :root, no
   prefers-color-scheme branch (see CLAUDE.md's Output formatting section
   and the artifact-design skill's guidance on deliberately committing to
   one theme).
 
-  Page-order rationale (locked 2026-08-14): headline-type content first
-  (splash, then glance, then the 3-box index-strip, then The Wire's
-  dense digest), narrative depth last (the three stories). The splash
+  Page-order rationale (locked 2026-08-14, index-strip step removed
+  2026-08-19): headline-type content first (splash, then glance, then
+  The Wire's dense digest), narrative depth last (the three stories). The splash
   sits first specifically so it's the thing read, unstyled competition
   with nothing above it. It briefly shared a `.top-row` grid with
   Markets at a Glance side by side (splash ~2.2fr, glance ~1fr,
@@ -72,10 +75,10 @@
   a 9-ray sunburst fanning up from a point near the bottom (morning --
   literally what the report is), and a small ascending polyline crossing
   it in the secondary copper tone (markets -- the report's subject).
-  Same visual language reused at 16px as `.icon` next to each
-  index-strip and story kicker (Markets/Calendar/Companies each get a
-  small line-icon: uptrend chart, calendar-with-marker, briefcase) --
-  everywhere except The Wire, which stays deliberately plain-text/dense.
+  Same visual language reused at 16px as `.icon` next to each story
+  kicker (Markets/Calendar/Companies each get a small line-icon: uptrend
+  chart, calendar-with-marker, briefcase) -- everywhere except The Wire,
+  which stays deliberately plain-text/dense.
   All icons are decorative (`aria-hidden="true"`); don't add icons to
   The Wire itself, that would undercut its whole "scan fast" purpose.
 
@@ -88,9 +91,9 @@
     report's other prose, not this slot). Target 1-3 short sentences:
     overall tone, the single most relevant/attention-grabbing insight of
     the morning, and (only if room) a pointer to the sections below.
-    Cut every supporting detail that already lives in the index-strip,
-    The Wire, or the story sections -- this box has to work read in
-    under five seconds, not as a summary someone works through. The
+    Cut every supporting detail that already lives in The Wire or the
+    story sections -- this box has to work read in under five seconds,
+    not as a summary someone works through. The
     `<h2>` above it is a short synthesis headline (e.g. "Markets Hold
     Steady as Gold Breaks Out"), not a single-story claim. `.sourced`
     reads something like "KeckOS Markets Desk -- synthesized from live
@@ -143,15 +146,11 @@
   3. Write the splash ("This Morning" mode by default, see above) --
      this is the first thing a reader sees; give it real editorial
      care, and keep it genuinely short (1-3 sentences), not a rehash of
-     the Markets teaser below it. Then fill "Markets at a Glance" (10
+     the sections below it. Then fill "Markets at a Glance" (10
      fixed cells: S&P/Nasdaq/Dow/Russell futures, VIX, 10-yr yield, WTI
      crude, gold, dollar index, bitcoin; g-change class pos/neg/flat
      per direction), directly below it.
-  4. Write the 3 index-strip teasers (Markets / Calendar / Companies)
-     mirroring the structure below -- these link to #markets, #calendar,
-     #companies. Keep each teaser to one punchy plain-language headline
-     + one sentence, matching the section's actual lede.
-  5. Fill The Wire -- no kicker/headline/deck, just a bordered .wire box
+  4. Fill The Wire -- no kicker/headline/deck, just a bordered .wire box
      with a label header and a .wire-grid of (usually 3) .wire-col
      columns. Each .wire-col opens with a short .desk label (e.g.
      "Markets & Macro", "Companies", "Deals & Views" -- name the desks
@@ -159,23 +158,23 @@
      followed by several .wire-item entries: a linked one-line headline
      in font-mono, then a .meta line (source, one or two words of
      context).
-  6. Section 1 (Markets) -- kicker "Markets", 2-column .cols body with
+  5. Section 1 (Markets) -- kicker "Markets", 2-column .cols body with
      the drop-cap effect (automatic via CSS on the first paragraph),
      one pull-quote pulled from the body text for emphasis, one
      figure-box with a chart + cutline IF a metric crossed the ~1% move
      threshold per the recipe (omit the figure-box entirely if nothing
      qualifies that morning -- don't force one).
-  7. Section 2 (Calendar) -- kicker "Today's Calendar", single-column
+  6. Section 2 (Calendar) -- kicker "Today's Calendar", single-column
      body (.single-col, no drop cap) -- this section is usually short
      enough that two columns would look sparse.
-  8. Section 3 (Companies) -- kicker "Company Briefs", the .briefs list
+  7. Section 3 (Companies) -- kicker "Company Briefs", the .briefs list
      pattern: one <div class="brief"> per name/story, bold mono lede
      label inline with the paragraph.
-  9. Footer colophon stays boilerplate -- edit only if the sources or
+  8. Footer colophon stays boilerplate -- edit only if the sources or
      policy note themselves change.
-  10. Embed any chart via base64 data URI (tools/chart.py), same pattern
-      as report_template.html.
-  11. Publish by writing this HTML to `index.html` in a local clone of
+  9. Embed any chart via base64 data URI (tools/chart.py), same pattern
+     as report_template.html.
+  10. Publish by writing this HTML to `index.html` in a local clone of
       the separate public `ck-os/keckos-morning-report` repo and pushing
       (see memory: `artifact_morning_market_report`) -- GitHub Pages at
       https://ck-os.github.io/keckos-morning-report/, not a claude.ai
@@ -334,31 +333,6 @@
   .splash p { font-size: 16px; color: var(--ink-muted); margin: 0; line-height: 1.6; max-width: 74ch; }
   .splash .sourced { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-muted); margin-top: 10px; }
 
-  /* ---- index strip ---- */
-  .index-strip {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
-    margin-top: 22px; border-bottom: 1px solid var(--rule);
-  }
-  .index-item {
-    padding: 0 22px 20px; border-left: 1px solid var(--rule);
-    text-decoration: none; color: inherit; display: block;
-  }
-  .index-item:first-child { border-left: none; padding-left: 2px; }
-  .index-item:last-child { padding-right: 2px; }
-  .index-kicker {
-    display: flex; align-items: center; gap: 6px;
-    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--accent); margin: 16px 0 8px;
-  }
-  .index-item h3 {
-    font-family: var(--font-display); font-weight: 700; font-size: 23px;
-    margin: 0 0 9px; line-height: 1.2; text-wrap: balance;
-  }
-  .index-item p {
-    font-size: 15px; color: var(--ink-muted); line-height: 1.55; margin: 0;
-  }
-  .index-item .jump { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-faint); margin-top: 10px; }
-
   /* ---- markets-at-a-glance ticker box ----
      Back to a full-width 5-column strip below the splash (2026-08-14 --
      see the .splash comment above for why the brief side-by-side
@@ -512,9 +486,6 @@
     .glance-cell:nth-child(5n+1) { border-left: 1px solid var(--rule); }
     .glance-cell:nth-child(2n+1) { border-left: none; }
     .glance-cell:nth-child(n+3) { border-top: 1px solid var(--rule); }
-    .index-strip { grid-template-columns: 1fr; }
-    .index-item { border-left: none; border-top: 1px solid var(--rule); padding-left: 2px !important; padding-right: 2px !important; }
-    .index-item:first-child { border-top: none; }
     .cols { column-count: 1; }
     .wire-grid { grid-template-columns: 1fr; }
     .wire-col { border-left: none; border-top: 1px solid var(--rule); }
@@ -545,76 +516,55 @@
     <div class="dateline">
       <span>Wednesday, August 19, 2026</span>
       <span class="edition">Edition 1 of 3 &middot; Premarket</span>
-      <span>Pulled ~7:06 AM ET</span>
+      <span>Pulled ~7:16 AM ET</span>
     </div>
   </header>
 
   <div class="splash">
     <div class="flash">
       <span class="flash-mark">THIS MORNING</span>
-      <span class="flash-time">Premarket &middot; 7:06 AM ET</span>
+      <span class="flash-time">Premarket &middot; 7:16 AM ET</span>
     </div>
-    <h2>Calm US futures mask a 3% Nikkei drop overnight</h2>
-    <p>US futures are barely moving and volatility is low, but Tokyo stocks fell more than 3% overnight even as Hong Kong, London, and Frankfurt stayed roughly flat. Target's earnings beat and a strong tariff refund boosted its outlook, one of the few clear stock-specific stories this morning.</p>
+    <h2>Futures Edge Higher, Nikkei Slides 3% as Moderna Soars on Cancer Vaccine Data</h2>
+    <p>U.S. futures are modestly higher and the VIX is easing, but Japan's Nikkei dropped over 3% overnight even as other Asian and European markets held steady. Moderna is the standout premarket mover, up roughly 50% on positive late-stage melanoma trial data alongside Merck, while Target rallied after raising its outlook.</p>
     <div class="sourced">KeckOS Markets Desk -- synthesized from live data and headlines below.</div>
   </div>
 
   <section class="glance">
-    <div class="glance-label">Markets at a Glance &middot; Live, pulled ~7:06 AM ET</div>
+    <div class="glance-label">Markets at a Glance &middot; Live, pulled ~7:16 AM ET</div>
     <div class="glance-strip">
-      <div class="glance-cell"><div class="g-label">S&amp;P Fut.</div><div class="g-value">7,714.25</div><div class="g-change pos">+0.10%</div></div>
-      <div class="glance-cell"><div class="g-label">Nasdaq Fut.</div><div class="g-value">29,526.50</div><div class="g-change flat">-0.00%</div></div>
-      <div class="glance-cell"><div class="g-label">Dow Fut.</div><div class="g-value">53,421</div><div class="g-change pos">+0.13%</div></div>
-      <div class="glance-cell"><div class="g-label">Russell Fut.</div><div class="g-value">3,022.70</div><div class="g-change flat">-0.00%</div></div>
-      <div class="glance-cell"><div class="g-label">VIX</div><div class="g-value">15.81</div><div class="g-change neg">-0.19%</div></div>
+      <div class="glance-cell"><div class="g-label">S&amp;P Fut.</div><div class="g-value">7,717.75</div><div class="g-change pos">+0.14%</div></div>
+      <div class="glance-cell"><div class="g-label">Nasdaq Fut.</div><div class="g-value">29,559.50</div><div class="g-change pos">+0.11%</div></div>
+      <div class="glance-cell"><div class="g-label">Dow Fut.</div><div class="g-value">53,437</div><div class="g-change pos">+0.16%</div></div>
+      <div class="glance-cell"><div class="g-label">Russell Fut.</div><div class="g-value">3,025.20</div><div class="g-change pos">+0.08%</div></div>
+      <div class="glance-cell"><div class="g-label">VIX</div><div class="g-value">15.76</div><div class="g-change neg">-0.51%</div></div>
       <div class="glance-cell"><div class="g-label">10-Yr Yield</div><div class="g-value">4.71%</div><div class="g-change neg">-0.38%</div></div>
-      <div class="glance-cell"><div class="g-label">WTI Crude</div><div class="g-value">$84.97</div><div class="g-change pos">+0.34%</div></div>
-      <div class="glance-cell"><div class="g-label">Gold</div><div class="g-value">$4,421.80</div><div class="g-change pos">+0.29%</div></div>
-      <div class="glance-cell"><div class="g-label">Dollar Index</div><div class="g-value">99.40</div><div class="g-change neg">-0.19%</div></div>
-      <div class="glance-cell"><div class="g-label">Bitcoin</div><div class="g-value">$64,469</div><div class="g-change neg">-0.33%</div></div>
+      <div class="glance-cell"><div class="g-label">WTI Crude</div><div class="g-value">$84.92</div><div class="g-change pos">+0.28%</div></div>
+      <div class="glance-cell"><div class="g-label">Gold</div><div class="g-value">$4,428.00</div><div class="g-change pos">+0.43%</div></div>
+      <div class="glance-cell"><div class="g-label">Dollar Index</div><div class="g-value">99.41</div><div class="g-change neg">-0.18%</div></div>
+      <div class="glance-cell"><div class="g-label">Bitcoin</div><div class="g-value">$64,423</div><div class="g-change neg">-0.40%</div></div>
     </div>
   </section>
-
-  <nav class="index-strip">
-    <a class="index-item" href="#markets">
-      <div class="index-kicker"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3,17 9,11 13,14 20,5"/><circle class="dot" cx="20" cy="5" r="1.4"/></svg>Markets</div>
-      <h3>Quiet US tape, loud Tokyo selloff</h3>
-      <p>Futures are flat to slightly positive and the VIX sits near 15.8, but Japan's Nikkei 225 dropped over 3% overnight.</p>
-      <div class="jump">&darr; Full story below</div>
-    </a>
-    <a class="index-item" href="#calendar">
-      <div class="index-kicker"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="15" rx="1.5"/><line x1="3" y1="11" x2="21" y2="11"/><line x1="7" y1="3" x2="7" y2="7"/><line x1="17" y1="3" x2="17" y2="7"/><circle class="dot" cx="12" cy="16" r="1.4"/></svg>Calendar</div>
-      <h3>No scheduled US data release this morning</h3>
-      <p>Today's news pull surfaced no confirmed economic calendar item for Wednesday -- here's what that means and what's on the radar.</p>
-      <div class="jump">&darr; Full story below</div>
-    </a>
-    <a class="index-item" href="#companies">
-      <div class="index-kicker"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="18" height="11" rx="1.2"/><rect x="9" y="5" width="6" height="4" rx="1"/><line x1="3" y1="14" x2="21" y2="14"/></svg>Companies</div>
-      <h3>Target raises its outlook on a tariff refund</h3>
-      <p>Target's second-quarter beat and Moderna/Merck's melanoma vaccine data lead a light morning for single-stock news.</p>
-      <div class="jump">&darr; Full story below</div>
-    </a>
-  </nav>
 
   <section class="wire" id="wire">
     <div class="wire-head">
       <span>The Wire &middot; Dense Digest</span>
-      <span class="wire-legend">A mix of macro, company, and geopolitical headlines this morning; no fresh-since-pull items to flag on a first edition.</span>
+      <span class="wire-legend">Today's mix: macro/rates commentary, one large biotech mover, retail earnings, and a wire's worth of company and geopolitical items.</span>
     </div>
     <div class="wire-grid">
             <div class="wire-col">
         <div class="desk">Markets & Macro</div>
         <div class="wire-item">
           <a href="https://www.cnbc.com/2026/08/19/inflation-dollar-risks-fed.html">Dollar risks are mounting. Here's what could weaken the greenback</a>
-          <div class="meta">CNBC &middot; 5:32 AM</div>
-        </div>
-        <div class="wire-item">
-          <a href="https://www.barrons.com/articles/stock-market-volatility-options-trades-c542301b?siteid=yhoof2&yptr=yahoo">Volatility Is Falling. It's a Good Time to Buy Options Again.</a>
-          <div class="meta">Barron's &middot; 1:30 AM</div>
+          <div class="meta">CNBC &middot; 7:08 AM</div>
         </div>
         <div class="wire-item">
           <a href="https://www.cnbc.com/2026/08/19/mortgage-demand-stalls-along-with-interest-rates.html">Weekly mortgage demand stalls along with interest rates, but rates are now moving higher again</a>
           <div class="meta">CNBC &middot; 7:00 AM</div>
+        </div>
+        <div class="wire-item">
+          <a href="https://www.barrons.com/articles/stock-market-volatility-options-trades-c542301b?siteid=yhoof2&yptr=yahoo">Volatility Is Falling. It's a Good Time to Buy Options Again.</a>
+          <div class="meta">Barron's &middot; 1:30 AM</div>
         </div>
         <div class="wire-item">
           <a href="https://www.cnbc.com/2026/08/19/goldman-ai-impact-employment-jobs.html">Goldman studied where AI is squeezing labor markets. Here's what it found</a>
@@ -624,12 +574,12 @@
       <div class="wire-col">
         <div class="desk">Companies</div>
         <div class="wire-item">
-          <span class="wire-tag wire-tag-new">NEW</span><a href="https://www.cnbc.com/2026/08/19/target-tgt-q2-2026-earnings.html">Target hikes outlook as sales rebound and huge tariff refund boosts bottom line</a>
-          <div class="meta">CNBC &middot; 6:45 AM</div>
+          <span class="wire-tag wire-tag-new">NEW</span><a href="https://www.cnbc.com/2026/08/19/moderna-merck-cancer-vaccine-shows-initial-late-stage-melanoma-data.html">Moderna, Merck cancer vaccine shows promise in late-stage trial; Moderna stock soars 50%</a>
+          <div class="meta">CNBC &middot; 7:16 AM</div>
         </div>
         <div class="wire-item">
-          <span class="wire-tag wire-tag-new">NEW</span><a href="https://www.cnbc.com/2026/08/19/moderna-merck-cancer-vaccine-shows-initial-late-stage-melanoma-data.html">Personalized cancer vaccine from Moderna, Merck shows promise in first late-stage melanoma trial</a>
-          <div class="meta">CNBC &middot; 6:49 AM</div>
+          <span class="wire-tag wire-tag-new">NEW</span><a href="https://www.cnbc.com/2026/08/19/target-tgt-q2-2026-earnings.html">Target hikes outlook as sales rebound and huge tariff refund boosts bottom line</a>
+          <div class="meta">CNBC &middot; 6:45 AM</div>
         </div>
         <div class="wire-item">
           <a href="https://www.cnbc.com/2026/08/19/amazon-plans-drone-expansion-as-top-exec-projects-1-million-deliveries.html">Amazon to expand drone service to nearly 500 cities after targeting 1 million deliveries this year</a>
@@ -641,22 +591,22 @@
         </div>
       </div>
       <div class="wire-col">
-        <div class="desk">Deals & World</div>
+        <div class="desk">Deals & Views</div>
         <div class="wire-item">
           <a href="https://www.cnbc.com/2026/08/19/deoleo-takeover-battle-olive-oil-dcoop.html">World's largest olive oil company pops over 15% as rivals circle in takeover battle</a>
           <div class="meta">CNBC &middot; 5:48 AM</div>
         </div>
         <div class="wire-item">
-          <a href="https://www.cnbc.com/2026/08/19/china-backflipping-robot-maker-unitree-jumps-shanghai-ipo.html">China's backflipping robot maker Unitree pops 542% in Shanghai debut</a>
+          <span class="wire-tag wire-tag-new">NEW</span><a href="https://www.cnbc.com/2026/08/19/china-backflipping-robot-maker-unitree-jumps-shanghai-ipo.html">China's backflipping robot maker Unitree pops 542% in Shanghai debut</a>
           <div class="meta">CNBC &middot; 3:20 AM</div>
-        </div>
-        <div class="wire-item">
-          <span class="wire-tag wire-tag-developing">DEV</span><a href="https://www.cnbc.com/2026/08/19/ukraine-war-fedorov-zelenskky-election.html">Zelenskyy faces challenge to his wartime rule as former defense chief calls for election</a>
-          <div class="meta">CNBC &middot; 5:30 AM</div>
         </div>
         <div class="wire-item">
           <span class="wire-tag wire-tag-developing">DEV</span><a href="https://www.cnbc.com/2026/08/19/us-iran-war-trump-hormuz.html">Iran reportedly weighs attacks on U.S. targets in Europe as UAE severs trade with Tehran</a>
           <div class="meta">CNBC &middot; 4:51 AM</div>
+        </div>
+        <div class="wire-item">
+          <span class="wire-tag wire-tag-developing">DEV</span><a href="https://www.cnbc.com/2026/08/19/ukraine-war-fedorov-zelenskky-election.html">Zelenskyy faces challenge to his wartime rule as former defense chief calls for election</a>
+          <div class="meta">CNBC &middot; 5:30 AM</div>
         </div>
       </div>
     </div>
@@ -664,44 +614,44 @@
 
   <article class="story" id="markets">
     <div class="story-kicker"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3,17 9,11 13,14 20,5"/><circle class="dot" cx="20" cy="5" r="1.4"/></svg>Markets</div>
-    <h2>US futures steady as Tokyo takes an overnight hit</h2>
-    <div class="deck">S&P and Dow futures are modestly higher, the VIX sits near multi-month lows, and the 10-year yield eased -- but Japan's market fell sharply overnight.</div>
+    <h2>A Quiet Grind Higher, With Japan the Outlier</h2>
+    <div class="deck">U.S. futures are modestly firmer and volatility is easing, but the Nikkei's overnight slide is the number that doesn't fit the calm picture.</div>
     <div class="byline">Markets Desk &middot; Premarket</div>
 
     <div class="cols">
-            <p>US equity futures are showing little urgency this morning: S&P 500 futures (ES=F) are up 0.10% to 7,714.25, Dow futures (YM=F) up 0.13%, and Nasdaq and Russell futures essentially flat. The VIX is down slightly to 15.81, a level consistent with the low-volatility backdrop Barron's flagged overnight, where one-month implied volatility on equity options has reportedly fallen to its lowest since January. The 10-year Treasury yield eased 0.38% to 4.71%, and the dollar index slipped 0.19% to 99.40 amid a Barron's/CNBC story flagging mounting dollar risks tied to Treasury supply concerns and Fed policy uncertainty. Crude oil (CL=F) is up 0.34% to $84.97 and gold (GC=F) added 0.29% to $4,421.80, while bitcoin slipped 0.33% to $64,469.</p>
-      <div class="pull-quote">Japan's Nikkei 225 fell 3.23% overnight even as Hong Kong, Frankfurt, and London traded largely flat -- a reminder that calm US futures don't mean calm everywhere.</div>
-      <p>The real story this morning is international, not domestic: the Nikkei 225 dropped 3.23% overnight to 65,326, a sharp move with no single headline in today's pull that clearly explains it, while Hong Kong's Hang Seng was essentially flat (+0.09%), Germany's DAX slipped 0.21%, and London's FTSE eased 0.26%. That divergence -- one major index down sharply while its regional and European peers barely moved -- is worth watching into the US cash open, since a swing that size domestically would normally cross this report's chart threshold; it didn't here only because the affected index is international. Separately, a qualitative thread worth flagging: Goldman Sachs research getting coverage this morning on AI's growing effect on developed-economy labor markets is the kind of pervasive, hard-to-size theme that doesn't show up in today's numbers but is showing up repeatedly in the headlines.</p>
+            <p>Premarket futures are pointing to a mild higher open across the board: S&P 500 futures (ES=F) are up 0.14% at 7,717.75, Nasdaq futures (NQ=F) up 0.11% at 29,559.50, Dow futures (YM=F) up 0.16%, and small-cap Russell futures (RTY=F) up 0.08%. The VIX is down 0.51% to 15.76, a level consistent with the low-volatility backdrop Barron's flagged this morning, and the 10-year Treasury yield (^TNX) has eased 0.38% to 4.71%. Gold (GC=F) is up 0.43% to $4,428, crude (CL=F) is up 0.28% to $84.92, the dollar index (DX-Y.NYB) is down 0.18% to 99.41, and bitcoin (BTC-USD) is off 0.40% to $64,423 — a mixed, low-drama cross-asset tape overall.</p>
+      <div class="pull-quote">The calm in U.S. futures and falling volatility stands in contrast to a 3.23% overnight drop in Japan's Nikkei 225, the one figure that breaks from today's otherwise quiet tape.</div>
+      <p>Overseas, the picture is uneven rather than uniformly calm: Japan's Nikkei 225 fell 3.23% overnight, a sharp move that stands out against Hong Kong's Hang Seng (+0.09%), Germany's DAX (-0.19%), and the UK's FTSE 100 (-0.15%), all little-changed. No news item in this morning's pull directly explains the Nikkei's drop, so it's worth flagging as an open question rather than assuming a specific cause. Separately, CNBC is running a piece on mounting dollar risks — Treasury supply, softer U.S. data, and Fed policy uncertainty — a qualitative theme worth watching even though the dollar index itself is only modestly softer this morning.</p>
     </div>
 
   </article>
 
   <article class="story" id="calendar">
     <div class="story-kicker"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="15" rx="1.5"/><line x1="3" y1="11" x2="21" y2="11"/><line x1="7" y1="3" x2="7" y2="7"/><line x1="17" y1="3" x2="17" y2="7"/><circle class="dot" cx="12" cy="16" r="1.4"/></svg>Today's Calendar</div>
-    <h2>Nothing confirmed on today's US economic calendar</h2>
-    <div class="deck">Today's news pull did not surface a scheduled US data release for Wednesday, August 19.</div>
+    <h2>Nothing on the Scheduled Calendar in Today's Pull</h2>
+    <div class="deck">No dated economic release for today's session appears in the news data reviewed for this edition.</div>
     <div class="byline">Markets Desk</div>
 
     <div class="single-col">
-            <p>Based on the market-news pull available for this edition, no specific US economic data release (CPI, jobs, retail sales, or similar) is identified as scheduled for today. The closest calendar-adjacent item is a weekly mortgage-demand update from the Mortgage Bankers Association, which reported stalled demand alongside rates that were flat last week but are now reportedly moving higher again -- that's a weekly recurring series, not a one-off headline event. If a specific data release is confirmed before the next edition, it will be reflected then; for now, this report states plainly that nothing else is confirmed on today's calendar rather than inferring one from surrounding market attention.</p>
+            <p>This morning's news pull does not surface a specific scheduled economic release for Wednesday, August 19 -- no CPI, jobs, retail sales, or Fed appearance dated to today appears in the sources reviewed. The dollar-risk and rate commentary in circulation this morning (see Markets, above) reads as ongoing market discussion about Fed policy and Treasury dynamics generally, not a pointer to a specific data drop landing today. Readers should not infer a release is scheduled from that coverage alone; if one is confirmed later in the morning, the 8:45 AM edition will reflect it.</p>
     </div>
   </article>
 
   <article class="story" id="companies">
     <div class="story-kicker"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="18" height="11" rx="1.2"/><rect x="9" y="5" width="6" height="4" rx="1"/><line x1="3" y1="14" x2="21" y2="14"/></svg>Company Briefs</div>
-    <h2>Target's tariff refund lifts its outlook; Moderna and Merck post encouraging cancer data</h2>
-    <div class="deck">A retail earnings beat and an early-stage oncology readout are the morning's clearest company-specific stories.</div>
+    <h2>Moderna Surges on Cancer Vaccine Data, Target Raises Outlook</h2>
+    <div class="deck">Two distinct company stories are moving premarket trading on real news: a biotech breakthrough and a retail earnings beat.</div>
     <div class="byline">Markets Desk</div>
 
     <div class="briefs">
             <div class="brief">
-        <div class="brief-block"><span class="lede">Target (TGT) --</span><p>Target posted better-than-expected second-quarter sales and raised its full-year outlook, helped by a large tariff refund that boosted the bottom line. The combination of a genuine sales rebound and a one-time tariff-related tailwind is worth separating when reading the headline number -- the underlying demand recovery and the refund aren't the same signal, and the latter may not repeat.</p></div>
+        <div class="brief-block"><span class="lede">Moderna (MRNA) --</span><p>Moderna shares are up roughly 50% premarket after a late-stage trial of its combination cancer vaccine with Merck's Keytruda showed the regimen significantly extended the time melanoma patients lived without recurrence, compared with Keytruda alone. This is a clinical-trial catalyst specific to the company, distinct from the broader biotech sector's day-to-day moves, and marks one of the more significant single-stock premarket moves in recent memory for the name.</p></div>
       </div>
       <div class="brief">
-        <div class="brief-block"><span class="lede">Moderna (MRNA) / Merck (MRK) --</span><p>The two companies reported that a personalized cancer vaccine combined with Merck's Keytruda significantly extended the time melanoma patients lived without their cancer returning, compared to Keytruda alone, in a first late-stage trial readout. It's an early but genuinely positive late-stage data point for both companies' oncology pipelines.</p></div>
+        <div class="brief-block"><span class="lede">Target (TGT) --</span><p>Target raised its full-year outlook after posting better-than-expected second-quarter sales, with the company citing a rebound in sales alongside a sizable tariff refund that boosted the bottom line. The tariff-refund detail is a one-time item worth distinguishing from the underlying sales rebound when assessing how much of the beat is repeatable.</p></div>
       </div>
       <div class="brief">
-        <div class="brief-block"><span class="lede">Amazon (AMZN) --</span><p>Amazon is expanding its drone delivery service to nearly 500 cities after a regulatory approval enabling longer-range flights, with a top executive projecting 1 million deliveries this year. This is an operational expansion story rather than a guidance or earnings event, but it's a concrete sign of the drone program moving from pilot to scale.</p></div>
+        <div class="brief-block"><span class="lede">Amazon (AMZN) --</span><p>Amazon is expanding its drone delivery service to nearly 500 cities, following a regulatory approval enabling longer-range flights, with an internal target of 1 million deliveries this year. This is an operational/logistics expansion story rather than an earnings or guidance event, and isn't showing up as a premarket price mover on its own in today's data.</p></div>
       </div>
     </div>
   </article>
