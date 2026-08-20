@@ -223,6 +223,27 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
 @keyframes mmr-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 .mmr-install-later{margin-top:28px;font:400 11px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#8A8178;padding:10px 16px;border:1px solid #4A3A34;border-radius:2px}
 
+/* One-time refresh-schedule toast (added 2026-08-20) -- unlike
+   .mmr-install above, shown to EVERY first-time visitor (not just iOS
+   Safari) 10s after load, and deliberately not full-screen: a second
+   full-page interruption right after the install overlay would be too
+   much friction on a first visit. `top` is set by JS to sit just below
+   the sticky header (whose height varies by content, so it can't be a
+   fixed CSS value) rather than anchored to the bottom, which is already
+   occupied by #mmr-dock's fixed nav bar. No auto-dismiss timer,
+   deliberately: if it happens to appear while the install overlay (or
+   iOS's own share sheet) is still covering the screen, a timed
+   auto-dismiss could expire before the visitor ever sees it -- it just
+   waits for an explicit tap on the close button instead. */
+.mmr-schedule-toast{position:fixed;left:14px;right:14px;z-index:90;display:flex;align-items:flex-start;gap:10px;max-width:520px;margin:0 auto;background:rgba(30,27,27,.97);backdrop-filter:blur(10px);border:1px solid #DCB24E;border-radius:8px;padding:13px 14px;box-shadow:0 10px 28px rgba(0,0,0,.45);opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .3s ease,transform .3s ease}
+.mmr-schedule-toast.is-visible{opacity:1;transform:translateY(0);pointer-events:auto}
+.mmr-schedule-toast[hidden]{display:none}
+.mmr-schedule-body{flex:1;min-width:0}
+.mmr-schedule-label{font:400 10px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#DCB24E;margin-bottom:4px}
+.mmr-schedule-text{font:400 13px/1.45 Georgia,serif;color:#F2ECE6}
+.mmr-schedule-text strong{color:#DCB24E;font-weight:700}
+.mmr-schedule-close{flex:none;width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:#AD988D;font-size:18px;line-height:1;margin-top:-2px}
+
 /* Height is set inline by JS (see layoutSwipe()), not by CSS -- it's
    sized to the ACTIVE card's own content each time the card changes
    (capped at the viewport space actually available), not a fixed
@@ -341,7 +362,7 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
     <div class="mmr-title-block">
       <div class="mmr-title">Morning Market Report</div>
       <div class="mmr-dateline-row">Thursday, Aug 20, 2026</div>
-      <div class="mmr-dateline-row">As of 7:05 PM &middot; Next 6:00 AM ET</div>
+      <div class="mmr-dateline-row">As of 7:12 PM &middot; Next 6:00 AM ET</div>
     </div>
     <a class="mmr-desktop-link" href="../" aria-label="Desktop edition"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="16" x2="12" y2="20"/></svg></a>
     <button class="mmr-share" id="mmr-share" aria-label="Share report"><span id="mmr-share-glyph">&#8599;</span></button>
@@ -366,47 +387,47 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
 
 <section class="mmr-card" id="c0">
   <div class="mmr-section-head">THIS MORNING &middot; Premarket</div>
-  <h1 class="mmr-h1">Trump's Iran Threat Sends Yields and Oil Higher, Futures Lower</h1>
-  <p class="mmr-lead">Stock futures are down across the board this morning after President Trump threatened Iran with "economic warfare," pushing the 10-year yield up to 4.70% and crude oil up over 2%. The VIX has jumped more than 7%, and Walmart shares are separately under pressure after a disappointing earnings outlook.</p>
+  <h1 class="mmr-h1">Futures Slide as Trump's Iran Threat Pushes Oil and Yields Higher</h1>
+  <p class="mmr-lead">Equity futures are down across the board and the VIX is up more than 7% after President Trump threatened Iran with "economic warfare," sending oil up over 2% and the 10-year yield higher. Walmart shares are also weighing on sentiment after tumbling 9% on a disappointing outlook, an early read on the consumer heading into today's earnings.</p>
   <div class="mmr-leads">
     <div class="mmr-lead-row is-lead">
       <span class="mmr-lead-label">The Standout</span>
-      <span class="mmr-lead-text">Crude oil jumped 2.15% to $86.31 and the 10-year yield rose to 4.70% after Trump's "economic warfare" threat against Iran, the clearest single geopolitical driver of this morning's risk-off tape.</span>
+      <span class="mmr-lead-text">S&P, Nasdaq, Dow, and Russell futures are all lower (-0.90% to -1.44%) with the VIX up 7.52% to 16.01, as Trump's Iran "economic warfare" threat drove crude oil up 2.12% to $86.28 and the 10-year yield up to 4.70%.</span>
     </div>
     <div class="mmr-lead-row">
       <span class="mmr-lead-label">The Outlier</span>
-      <span class="mmr-lead-text">Bitcoin is up 4.93% to $72,715, bucking the broader risk-off move in equities and standing out as the one major asset rallying alongside oil and gold rather than with stock futures.</span>
+      <span class="mmr-lead-text">Bitcoin is bucking the risk-off tape entirely, up 5.12% to $72,850 even as equity futures sell off.</span>
     </div>
     <div class="mmr-lead-row">
       <span class="mmr-lead-label">The Rest of the Tape</span>
-      <span class="mmr-lead-text">All four major U.S. equity futures are lower -- Russell futures leading the decline at -1.43% -- with the VIX up over 7% to 16.01, consistent with a broad, geopolitically-driven pullback in appetite for risk rather than a single-name story.</span>
+      <span class="mmr-lead-text">Overseas, Asian equities are firmer (Nikkei +1.2%, Hang Seng +0.8%) while Europe is mixed (DAX -0.42%, FTSE +0.04%), a split picture that hasn't yet caught up to the overnight U.S. risk-off move.</span>
     </div>
   </div>
   <div class="mmr-card-footer">KeckOS Markets Desk -- synthesized from live data and headlines below.</div>
 </section>
 
 <section class="mmr-card" id="c1">
-  <div class="mmr-section-head">MARKETS AT A GLANCE &middot; 7:05 PM ET</div>
+  <div class="mmr-section-head">MARKETS AT A GLANCE &middot; 7:12 PM ET</div>
   <div class="mmr-glance-grid">
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">S&P Fut.</span>
-      <span class="mmr-glance-value">7,669.00</span>
+      <span class="mmr-glance-value">7,668.75</span>
       <span class="mmr-glance-chg mmr-neg">-0.90%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Nasdaq Fut.</span>
-      <span class="mmr-glance-value">29,322.25</span>
-      <span class="mmr-glance-chg mmr-neg">-0.98%</span>
+      <span class="mmr-glance-value">29,319.25</span>
+      <span class="mmr-glance-chg mmr-neg">-0.99%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Dow Fut.</span>
-      <span class="mmr-glance-value">52,876</span>
-      <span class="mmr-glance-chg mmr-neg">-1.27%</span>
+      <span class="mmr-glance-value">52,871</span>
+      <span class="mmr-glance-chg mmr-neg">-1.28%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Russell Fut.</span>
-      <span class="mmr-glance-value">3,002.60</span>
-      <span class="mmr-glance-chg mmr-neg">-1.43%</span>
+      <span class="mmr-glance-value">3,002.30</span>
+      <span class="mmr-glance-chg mmr-neg">-1.44%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">VIX</span>
@@ -420,13 +441,13 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">WTI Crude</span>
-      <span class="mmr-glance-value">$86.31</span>
-      <span class="mmr-glance-chg mmr-pos">+2.15%</span>
+      <span class="mmr-glance-value">$86.28</span>
+      <span class="mmr-glance-chg mmr-pos">+2.12%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Gold</span>
-      <span class="mmr-glance-value">$4,579.50</span>
-      <span class="mmr-glance-chg mmr-pos">+0.52%</span>
+      <span class="mmr-glance-value">$4,581.80</span>
+      <span class="mmr-glance-chg mmr-pos">+0.57%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Dollar Index</span>
@@ -435,8 +456,8 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Bitcoin</span>
-      <span class="mmr-glance-value">$72,715</span>
-      <span class="mmr-glance-chg mmr-pos">+4.93%</span>
+      <span class="mmr-glance-value">$72,850</span>
+      <span class="mmr-glance-chg mmr-pos">+5.12%</span>
     </div>
   </div>
 </section>
@@ -451,8 +472,8 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
   <div class="mmr-desk">
     <div class="mmr-desk-head">Markets & Macro</div>
       <a class="mmr-wire-item is-impact" href="https://stocktwits.com/news-articles/markets/equity/us-stock-indices-end-lower-as-trump-s-economic-warfare-threats-push-yields-oil-higher/cZYeR5dRJZA" target="_blank" rel="noopener" data-tag="NEW" data-impact="1">
-        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">US Stock Indices End Lower As Trump's 'Economic Warfare' Threats Push Yields, Oil Higher -- WMT, CRWV, SBUX, DE, RKLB In Focus</span></div>
-        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in Splash/Signal List · CL=F +2.15%, ^TNX 4.70%, futures down across the board</span></div>
+        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">US Stock Indices End Lower As Trump's 'Economic Warfare' Threats Push Yields, Oil Higher</span></div>
+        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in splash/signal_list · futures -0.90% to -1.44%, WTI +2.12%, 10-yr yield +0.92%</span></div>
         <div class="mmr-wire-meta">Stocktwits &middot; 5:31 PM</div>
       </a>
       <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/bessent-warsh-fed-bond-market-treasury-yields.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
@@ -463,33 +484,22 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
         <div class="mmr-wire-row"><span class="mmr-wire-title">Bessent's efforts in the Treasury market so far haven't worked. Here's what else he can try</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 5:13 PM</div>
       </a>
-      <a class="mmr-wire-item" href="http://www.etf.com/sections/news/ask-anything-six-weeks-investors-putting-etf-questions-ai?utm_source=yahoo-finance&utm_medium=rss&utm_campaign=yahoo-finance-rss" target="_blank" rel="noopener" data-tag="" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-title">Ask Anything: Six Weeks of Investors Putting ETF Questions to AI</span></div>
-        <div class="mmr-wire-meta">etf.com &middot; 2:01 PM</div>
+      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/public-service-loan-forgiveness-pslf-payment-counts.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">Education Department recalculates student loan forgiveness counts, setting some PSLF borrowers back</span></div>
+        <div class="mmr-wire-meta">CNBC &middot; 3:13 PM</div>
       </a>
   </div>
   <div class="mmr-desk">
     <div class="mmr-desk-head">Companies</div>
       <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/20/walmart-wmt-q2-2027-earnings.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="1">
         <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Walmart stock tumbles 9% after outlook disappoints Wall Street</span></div>
-        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Covered in Company Briefs · WMT -9% on soft guidance</span></div>
+        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Biggest single-stock move · WMT ~-9% on weak outlook</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 4:01 PM</div>
       </a>
       <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/hyundai-georgia-metaplant-us-production.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
         <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Hyundai considering U.S. production increase at new Georgia plant, CEO tells CNBC</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 5:54 PM</div>
       </a>
-      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/public-service-loan-forgiveness-pslf-payment-counts.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-title">Education Department recalculates student loan forgiveness counts, setting some PSLF borrowers back</span></div>
-        <div class="mmr-wire-meta">CNBC &middot; 3:13 PM</div>
-      </a>
-      <a class="mmr-wire-item" href="https://247wallst.com/investing/etf/2026/08/20/how-much-of-your-portfolio-should-actually-be-in-ftxl/" target="_blank" rel="noopener" data-tag="" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-title">How Much of Your Portfolio Should Actually Be in FTXL</span></div>
-        <div class="mmr-wire-meta">24/7 Wall St. &middot; 5:15 PM</div>
-      </a>
-  </div>
-  <div class="mmr-desk">
-    <div class="mmr-desk-head">Deals & Views</div>
       <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/heres-how-the-los-angeles-lakers-12point5b-sale-impacts-the-value-of-all-30-nba-teams.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
         <div class="mmr-wire-row"><span class="mmr-wire-title">The Los Angeles Lakers sold for $12.5 billion. Here's what every NBA team is now worth</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 4:28 PM</div>
@@ -497,6 +507,13 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
       <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/arctos-agrees-to-buy-10percent-of-atlanta-falcons-at-10point6-billion-valuation-sources.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
         <div class="mmr-wire-row"><span class="mmr-wire-title">Arctos agrees to buy 10% of Atlanta Falcons at $10.6 billion valuation, sources say</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 1:28 PM</div>
+      </a>
+  </div>
+  <div class="mmr-desk">
+    <div class="mmr-desk-head">Deals & Views</div>
+      <a class="mmr-wire-item" href="https://247wallst.com/investing/etf/2026/08/20/how-much-of-your-portfolio-should-actually-be-in-ftxl/" target="_blank" rel="noopener" data-tag="" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">How Much of Your Portfolio Should Actually Be in FTXL</span></div>
+        <div class="mmr-wire-meta">24/7 Wall St. &middot; 5:15 PM</div>
       </a>
       <a class="mmr-wire-item" href="https://247wallst.com/investing/2026/08/20/your-active-etf-manager-lost-again-and-87-of-them-have-been-losing-for-a-decade/" target="_blank" rel="noopener" data-tag="" data-impact="0">
         <div class="mmr-wire-row"><span class="mmr-wire-title">Your Active ETF Manager Lost Again, and 87% of Them Have Been Losing for a Decade</span></div>
@@ -506,17 +523,21 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
         <div class="mmr-wire-row"><span class="mmr-wire-title">We Told You to Forget SCHD. It Just Beat the S&P by 12 Points, Its Biggest Win Ever</span></div>
         <div class="mmr-wire-meta">24/7 Wall St. &middot; 2:41 PM</div>
       </a>
+      <a class="mmr-wire-item" href="http://www.etf.com/sections/news/ask-anything-six-weeks-investors-putting-etf-questions-ai?utm_source=yahoo-finance&utm_medium=rss&utm_campaign=yahoo-finance-rss" target="_blank" rel="noopener" data-tag="" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">Ask Anything: Six Weeks of Investors Putting ETF Questions to AI</span></div>
+        <div class="mmr-wire-meta">etf.com &middot; 2:01 PM</div>
+      </a>
   </div>
 </section>
 
 <section class="mmr-card" id="c3">
   <div class="mmr-section-head">MARKETS &middot; MARKETS DESK</div>
-  <h2 class="mmr-h2">Trump's Iran Threat Hits Risk Appetite as Yields, Oil Climb</h2>
-  <p class="mmr-lead">Futures across the board are lower this morning as a fresh geopolitical threat pushes safe-haven and commodity prices up together.</p>
-  <p class="mmr-body">Overnight and premarket trading is broadly risk-off after President Trump threatened Iran with "economic warfare" in a Truth Social post. S&P futures (ES=F) are down 0.90% to 7,669.00, Nasdaq futures (NQ=F) off 0.98% to 29,322.25, Dow futures (YM=F) down 1.27% to 52,876, and small-cap Russell futures (RTY=F) leading losses at -1.43% to 3,002.60. The VIX has jumped 7.52% to 16.01, still a modest absolute level but a sharp one-day move signaling higher hedging demand. The 10-year Treasury yield rose 0.92% to 4.70%, and WTI crude climbed 2.15% to $86.31 -- both consistent with markets pricing in a real geopolitical risk premium rather than a routine data-driven move.</p>
+  <h2 class="mmr-h2">Iran Threat Rattles Futures, Sends Oil and Yields Higher</h2>
+  <p class="mmr-lead">A presidential threat of 'economic warfare' against Iran is the overnight story, lifting crude and yields while equity futures and volatility move in opposite directions.</p>
+  <p class="mmr-body">Risk sentiment turned lower overnight after President Trump threatened Iran with "economic warfare" in a Truth Social post, and the tape is pricing it in across asset classes. S&P futures (ES=F) are down 0.90% to 7,668.75, Nasdaq futures (NQ=F) off 0.99% to 29,319.25, Dow futures (YM=F) down 1.28%, and small-cap Russell futures (RTY=F) the weakest of the group at -1.44%. The VIX has jumped 7.52% to 16.01, still a low absolute level but a sharp one-day move. WTI crude (CL=F) is up 2.12% to $86.28 and the 10-year Treasury yield (^TNX) has risen to 4.70%, both direct reactions to the geopolitical headline, while gold (GC=F) is up a more modest 0.57% to $4,581.80.</p>
   <div id="mmr-story-more" hidden>
-    <div class="mmr-pullquote">Oil up over 2%, yields up, equity futures down across the board -- a classic geopolitical risk-off print, not a single-stock story.</div>
-    <p class="mmr-body">Gold added 0.52% to $4,579.50 and bitcoin surged 4.93% to $72,715, an unusual pairing of a traditional safe-haven and a risk asset both moving higher while equity futures fall -- a reminder that not every asset is reading this morning's headline the same way. The dollar index is essentially flat (+0.03% to 98.84). Overseas, Asian equities shrugged off the U.S. move overnight: the Nikkei 225 gained 1.2% to 66,216.79 and the Hang Seng added 0.8% to 25,698.49, both trading before the Trump comments hit the wire. European markets are mixed and little-changed by comparison, with Germany's DAX down 0.42% to 25,983.04 and London's FTSE 100 roughly flat at +0.04% to 10,748.16. Separately, a running story on Treasury Secretary Bessent's efforts to influence long-term yields -- and reported friction with Fed pick Warsh over central bank independence -- adds a second, distinct thread of policy uncertainty in the bond market this morning, alongside the Iran headline.</p>
+    <div class="mmr-pullquote">Oil up 2.12%, the 10-year yield higher, and the VIX up more than 7% -- a geopolitical headline, not an economic data point, is setting the overnight tone.</div>
+    <p class="mmr-body">Overseas, the reaction has been more muted and mixed than in U.S. futures: the Nikkei 225 closed up 1.2% at 66,216.79 and the Hang Seng added 0.8% to 25,698.49, while European trading is split, with Germany's DAX down 0.42% and London's FTSE roughly flat at +0.04%. The dollar index (DX-Y.NYB) is essentially unchanged at 98.84, and bitcoin is the standout divergence on the tape, up 5.12% to $72,850 even as equity risk appetite has clearly deteriorated overnight -- a reminder that not every asset is reading the Iran headline the same way. Separately, Treasury Secretary Bessent's efforts to lean on long-term yields are drawing scrutiny in the financial press, with reporting suggesting the push has yet to show results and is raising questions about Fed independence as Governor Warsh navigates the overlap.</p>
   </div>
   <button class="mmr-toggle" id="mmr-story-toggle">READ THE FULL STORY</button>
 </section>
@@ -559,14 +580,18 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
 
 <section class="mmr-card" id="c5">
   <div class="mmr-section-head">COMPANY BRIEFS &middot; MARKETS DESK</div>
-  <h2 class="mmr-h2">Walmart Slides on Soft Guidance</h2>
-  <p class="mmr-lead">A single earnings-driven mover stands out against an otherwise macro-dominated morning.</p>
+  <h2 class="mmr-h2">Walmart Leads the Movers After a Disappointing Outlook</h2>
+  <p class="mmr-lead">The retail bellwether's post-earnings slide is today's clearest single-stock story, alongside notable capital-markets activity in sports franchises.</p>
   <div class="mmr-briefs">
     <div class="mmr-brief is-lead">
       <span class="mmr-brief-lede is-lead">Walmart (WMT) --</span>
-      <p class="mmr-brief-body">Shares tumbled roughly 9% after the retailer's fiscal second-quarter outlook disappointed Wall Street, per CNBC. As one of the most closely watched reads on the health of the U.S. consumer and the so-called K-shaped economy, the guidance miss is a company-specific story worth watching for what it implies about spending patterns heading into the back half of the year -- though today's premarket move is being driven far more by the broader Iran-linked risk-off tape than by Walmart's print alone.</p>
+      <p class="mmr-brief-body">Shares are down roughly 9% after the retailer's fiscal second-quarter outlook fell short of Wall Street's expectations. As one of the first major retailers to report this earnings cycle, Walmart's results are being read as an early signal on the health of the consumer and the broader "K-shaped economy" theme -- a macro thread worth watching as more retail earnings land in the coming weeks.</p>
     </div>
-
+    <div class="mmr-brief mmr-brief-extra" hidden>
+      <span class="mmr-brief-lede">Hyundai --</span>
+      <p class="mmr-brief-body">CEO Jose Munoz told CNBC the automaker is considering increasing U.S. production capacity at its new Georgia metaplant, part of a previously announced $26 billion U.S. investment plan through 2028. No premarket share reaction was reported alongside the comments.</p>
+    </div>
+    <button class="mmr-toggle" id="mmr-briefs-toggle" data-show-label="SHOW 1 MORE BRIEF">SHOW 1 MORE BRIEF</button>
   </div>
   <div class="mmr-colophon">
     <div class="mmr-colophon-head">THE KECKOS MORNING EDITION</div>
@@ -619,6 +644,14 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
     <span>Look in Safari's toolbar below</span>
   </div>
   <button class="mmr-install-later" id="mmr-install-later">Maybe Later</button>
+</div>
+
+<div class="mmr-schedule-toast" id="mmr-schedule-toast" hidden>
+  <div class="mmr-schedule-body">
+    <div class="mmr-schedule-label">Refresh Schedule</div>
+    <div class="mmr-schedule-text">New data <strong>6:00, 8:45 &amp; 10:00 AM ET</strong>, weekdays.</div>
+  </div>
+  <button class="mmr-schedule-close" id="mmr-schedule-close" aria-label="Dismiss">&times;</button>
 </div>
 
 <script>
@@ -688,6 +721,34 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
     // Brief delay before revealing -- lets the page render first so
     // this reads as a deliberate welcome moment, not an instant flash.
     setTimeout(function(){ overlay.classList.add('is-visible'); }, 500);
+  })();
+
+  // One-time "refreshes 6:00/8:45/10:00 AM ET weekdays" toast -- shown
+  // to every first-time visitor (unlike the iOS-only install overlay
+  // above), 10s after load, dismissed permanently via localStorage the
+  // same pattern. See the .mmr-schedule-toast CSS comment for why it's
+  // not full-screen and has no auto-dismiss timer.
+  (function setupScheduleToast(){
+    var toast = document.getElementById('mmr-schedule-toast');
+    if (!toast) return;
+    var dismissed = false;
+    try { dismissed = localStorage.getItem('keckos-mmr-schedule-dismissed') === '1'; } catch (e) {}
+    if (dismissed) return;
+
+    function dismiss(){
+      toast.classList.remove('is-visible');
+      try { localStorage.setItem('keckos-mmr-schedule-dismissed', '1'); } catch (e) {}
+      setTimeout(function(){ toast.hidden = true; }, 300);
+    }
+    var closeBtn = document.getElementById('mmr-schedule-close');
+    if (closeBtn) closeBtn.addEventListener('click', dismiss);
+
+    setTimeout(function(){
+      var header = document.querySelector('.mmr-header');
+      toast.style.top = (header ? header.offsetHeight + 10 : 10) + 'px';
+      toast.hidden = false;
+      requestAnimationFrame(function(){ toast.classList.add('is-visible'); });
+    }, 10000);
   })();
 
   function swipeMode(){ return window.innerWidth < 900; }
