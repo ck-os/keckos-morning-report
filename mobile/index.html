@@ -102,6 +102,24 @@
   in-header banner, it does NOT need to be threaded through
   layoutSwipe()'s header.offsetHeight math; it overlays everything
   rather than occupying document flow space.
+
+  Real bug, fixed the same day: `[hidden]` and the plain `.mmr-install`
+  rule have EQUAL CSS specificity, and author styles win cascade ties
+  over the UA stylesheet's default `[hidden]{display:none}` -- so
+  `.mmr-install{display:flex}` was quietly winning even after JS set
+  `hidden=true` on dismiss, leaving an invisible but still-fixed,
+  still-covering-the-viewport element with `pointer-events` still
+  active, silently swallowing every tap on the page underneath it.
+  Fixed with `pointer-events:none` as the default state (covers the
+  300ms fade-out transition too, before `hidden` is even set) plus an
+  explicit `.mmr-install[hidden]{display:none}` rule for the specificity
+  tie. If a future "hidden but still there" bug shows up on any other
+  overlay/modal in this file, check for this exact pattern first.
+
+  Steps are literally the 3 taps in order, confirmed against a real
+  device (not a generic "tap Share" -- on the toolbar layout this was
+  tested against, Share sits behind the ••• button, not directly
+  visible): 1) tap •••, 2) tap Share, 3) tap "Add to Home Screen".
 -->
 <!doctype html>
 <html lang="en">
@@ -177,8 +195,17 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
    in markup; JS unhides it only for iOS Safari, not-yet-standalone,
    not-yet-dismissed visitors, after a brief delay so it reads as a
    deliberate welcome moment rather than a jarring instant flash. */
-.mmr-install{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 28px;background:rgba(18,18,18,.97);backdrop-filter:blur(6px);text-align:center;opacity:0;transition:opacity .3s ease}
-.mmr-install.is-visible{opacity:1}
+.mmr-install{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 28px;background:rgba(18,18,18,.97);backdrop-filter:blur(6px);text-align:center;opacity:0;pointer-events:none;transition:opacity .3s ease}
+.mmr-install.is-visible{opacity:1;pointer-events:auto}
+/* [hidden] has the SAME CSS specificity as the plain .mmr-install rule
+   above, and author styles win cascade ties over the UA stylesheet's
+   default [hidden]{display:none} -- so `display:flex` was quietly
+   winning even after JS set hidden=true, leaving an invisible but
+   still-fixed, still-covering-the-viewport element with no way to
+   click through it. pointer-events:none above is the real fix (covers
+   the fade-out transition too, before hidden is even set); this rule
+   just makes sure display actually goes to none once it is. */
+.mmr-install[hidden]{display:none}
 .mmr-install-close{position:absolute;top:16px;right:16px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#AD988D;font-size:22px;line-height:1}
 .mmr-install-icon{width:64px;height:64px;margin-bottom:18px}
 .mmr-install-title{font:700 24px/1.25 'Playfair Display',Georgia,serif;color:#F2ECE6;max-width:280px;text-wrap:pretty}
@@ -312,7 +339,7 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
     <div class="mmr-title-block">
       <div class="mmr-title">Morning Market Report</div>
       <div class="mmr-dateline-row">Thursday, Aug 20, 2026</div>
-      <div class="mmr-dateline-row">Edition 1 of 3 &middot; 1:49 PM ET</div>
+      <div class="mmr-dateline-row">Edition 1 of 3 &middot; 1:59 PM ET</div>
     </div>
     <a class="mmr-desktop-link" href="../" aria-label="Desktop edition"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="16" x2="12" y2="20"/></svg></a>
     <button class="mmr-share" id="mmr-share" aria-label="Share report"><span id="mmr-share-glyph">&#8599;</span></button>
@@ -327,7 +354,7 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
   </div>
   <button class="mmr-signal" id="mmr-signal-strip">
     <span class="mmr-signal-dot"></span>
-    <span class="mmr-signal-label">3 MOVING THE TAPE &middot; 9 NEW</span>
+    <span class="mmr-signal-label">2 MOVING THE TAPE &middot; 7 NEW</span>
     <span class="mmr-signal-spacer"></span>
     <span class="mmr-signal-view">VIEW &rarr;</span>
   </button>
@@ -337,67 +364,67 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
 
 <section class="mmr-card" id="c0">
   <div class="mmr-section-head">THIS MORNING &middot; Premarket</div>
-  <h1 class="mmr-h1">Risk-Off Morning as Yields Climb and Oil Jumps, But Bitcoin and Gold Buck the Selloff</h1>
-  <p class="mmr-lead">Equity futures are lower across the board -- Russell futures down over 1.5%, Nasdaq futures off more than 1% -- as the VIX jumps 6% and the 10-year yield pushes to 4.70%. Crude oil is up 2.56% and bitcoin has surged 5% amid a fresh push in Washington for crypto market-structure legislation, an unusual split where safe-haven and risk assets are both catching a bid while stocks retreat.</p>
+  <h1 class="mmr-h1">Futures Slide as Yields Jump, Oil Spikes, and VIX Wakes Up</h1>
+  <p class="mmr-lead">Risk is coming off broadly this morning -- all four major U.S. index futures are lower, led by small caps, while the VIX jumps nearly 7% and the 10-year yield pushes toward 4.71%. Crude oil is up more than 2.5%, gold and bitcoin are both firmer, and Walmart's earnings beat is being overshadowed by sales concerns.</p>
   <div class="mmr-leads">
     <div class="mmr-lead-row is-lead">
       <span class="mmr-lead-label">The Standout</span>
-      <span class="mmr-lead-text">Small caps are leading the retreat, with Russell 2000 futures down 1.56% versus a 0.72% decline in S&P futures, as the VIX jumps 6.45% to 15.85 alongside a 10-year yield push to 4.70%.</span>
+      <span class="mmr-lead-text">Small caps are getting hit hardest premarket, with Russell 2000 futures down 1.49% against a 0.68% decline in S&P futures, while the VIX jumps 6.85% to 15.91 and the 10-year yield rises to 4.71%.</span>
     </div>
     <div class="mmr-lead-row">
       <span class="mmr-lead-label">The Outlier</span>
-      <span class="mmr-lead-text">Bitcoin is up 5.03% to $72,784, extending a two-day, 12% surge tied to a last-ditch White House and crypto-industry push to pass the Clarity Act, even as equities sell off.</span>
+      <span class="mmr-lead-text">Crude oil is up 2.60% to $86.69 even as equity futures broadly retreat, a divergence that doesn't fit a simple risk-off story.</span>
     </div>
     <div class="mmr-lead-row">
       <span class="mmr-lead-label">The Rest of the Tape</span>
-      <span class="mmr-lead-text">Oil's 2.56% jump to $86.65 and a firmer dollar point to a genuine cross-asset repricing rather than an isolated equity story, while Asian markets (Nikkei +1.2%, Hang Seng +0.8%) diverged from a softer European tape (DAX -0.42%, FTSE roughly flat).</span>
+      <span class="mmr-lead-text">Overseas markets are mixed -- Tokyo and Hong Kong are higher while Frankfurt is slightly lower and London is roughly flat -- and bitcoin's 5% jump points to a distinct, crypto-specific move tied to Clarity Act momentum rather than the broader risk-off tone in equities.</span>
     </div>
   </div>
   <div class="mmr-card-footer">KeckOS Markets Desk -- synthesized from live data and headlines below.</div>
 </section>
 
 <section class="mmr-card" id="c1">
-  <div class="mmr-section-head">MARKETS AT A GLANCE &middot; 1:49 PM ET</div>
+  <div class="mmr-section-head">MARKETS AT A GLANCE &middot; 1:59 PM ET</div>
   <div class="mmr-glance-grid">
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">S&P Fut.</span>
-      <span class="mmr-glance-value">7,683.00</span>
-      <span class="mmr-glance-chg mmr-neg">-0.72%</span>
+      <span class="mmr-glance-value">7,685.75</span>
+      <span class="mmr-glance-chg mmr-neg">-0.68%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Nasdaq Fut.</span>
-      <span class="mmr-glance-value">29,294.75</span>
-      <span class="mmr-glance-chg mmr-neg">-1.07%</span>
+      <span class="mmr-glance-value">29,309.00</span>
+      <span class="mmr-glance-chg mmr-neg">-1.03%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Dow Fut.</span>
-      <span class="mmr-glance-value">52,993</span>
-      <span class="mmr-glance-chg mmr-neg">-1.05%</span>
+      <span class="mmr-glance-value">52,988</span>
+      <span class="mmr-glance-chg mmr-neg">-1.06%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Russell Fut.</span>
-      <span class="mmr-glance-value">2,998.50</span>
-      <span class="mmr-glance-chg mmr-neg">-1.56%</span>
+      <span class="mmr-glance-value">3,000.60</span>
+      <span class="mmr-glance-chg mmr-neg">-1.49%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">VIX</span>
-      <span class="mmr-glance-value">15.85</span>
-      <span class="mmr-glance-chg mmr-pos">+6.45%</span>
+      <span class="mmr-glance-value">15.91</span>
+      <span class="mmr-glance-chg mmr-pos">+6.85%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">10-Yr Yield</span>
-      <span class="mmr-glance-value">4.70%</span>
-      <span class="mmr-glance-chg mmr-pos">+1.10%</span>
+      <span class="mmr-glance-value">4.71%</span>
+      <span class="mmr-glance-chg mmr-pos">+1.14%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">WTI Crude</span>
-      <span class="mmr-glance-value">$86.65</span>
-      <span class="mmr-glance-chg mmr-pos">+2.56%</span>
+      <span class="mmr-glance-value">$86.69</span>
+      <span class="mmr-glance-chg mmr-pos">+2.60%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Gold</span>
-      <span class="mmr-glance-value">$4,573.50</span>
-      <span class="mmr-glance-chg mmr-pos">+0.39%</span>
+      <span class="mmr-glance-value">$4,575.20</span>
+      <span class="mmr-glance-chg mmr-pos">+0.43%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Dollar Index</span>
@@ -406,8 +433,8 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Bitcoin</span>
-      <span class="mmr-glance-value">$72,784</span>
-      <span class="mmr-glance-chg mmr-pos">+5.03%</span>
+      <span class="mmr-glance-value">$72,830</span>
+      <span class="mmr-glance-chg mmr-pos">+5.09%</span>
     </div>
   </div>
 </section>
@@ -416,79 +443,78 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
   <div class="mmr-section-head">THE WIRE &middot; DENSE DIGEST</div>
   <div class="mmr-wfilters">
     <button class="mmr-wfilter is-active" data-filter="all">ALL 12</button>
-    <button class="mmr-wfilter" data-filter="impact">IMPACT 3</button>
-    <button class="mmr-wfilter" data-filter="new">NEW &middot; DEV 9</button>
+    <button class="mmr-wfilter" data-filter="impact">IMPACT 2</button>
+    <button class="mmr-wfilter" data-filter="new">NEW &middot; DEV 7</button>
   </div>
   <div class="mmr-desk">
     <div class="mmr-desk-head">Markets & Macro</div>
+      <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/20/bitcoin-surges-as-trump-crypto-execs-lead-final-push-for-clarity-act.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="1">
+        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Bitcoin surges 12% in two days as Trump, crypto execs lead last ditch effort for Clarity Act</span></div>
+        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in Signal List/Glance · BTC-USD $72,830, +5.09%</span></div>
+        <div class="mmr-wire-meta">CNBC &middot; 12:07 PM</div>
+      </a>
+      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/bessent-says-treasury-buyback-operation-could-be-more-than-4-billion.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Bessent says Treasury buyback operation could be more than $4 billion</span></div>
+        <div class="mmr-wire-meta">CNBC &middot; 11:35 AM</div>
+      </a>
       <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/bessent-economy-iran-war-trump.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
         <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Bessent says U.S. likely won't restart large-scale Iran combat as it steps up economic pressure</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 1:19 PM</div>
       </a>
-      <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/20/bessent-says-treasury-buyback-operation-could-be-more-than-4-billion.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="1">
-        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Bessent says Treasury buyback operation could be more than $4 billion</span></div>
-        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in Markets · 10-yr yield 4.70%, +1.10%</span></div>
-        <div class="mmr-wire-meta">CNBC &middot; 11:35 AM</div>
-      </a>
       <a class="mmr-wire-item" href="https://247wallst.com/investing/2026/08/20/median-stock-portfolio-hits-record-350000-household-share-of-nation-debt-grows-to-296500/" target="_blank" rel="noopener" data-tag="" data-impact="0">
         <div class="mmr-wire-row"><span class="mmr-wire-title">Median Stock Portfolio Hits Record $350,000 -- Household Share of Nation Debt Grows to $296,500</span></div>
         <div class="mmr-wire-meta">24/7 Wall St. &middot; 12:43 PM</div>
-      </a>
-      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/ai-data-center-election-backlash.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-title">AI data center outrage is showing up everywhere from ads to elections</span></div>
-        <div class="mmr-wire-meta">CNBC &middot; 11:56 AM</div>
       </a>
   </div>
   <div class="mmr-desk">
     <div class="mmr-desk-head">Companies</div>
       <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/20/walmart-wmt-q2-2027-earnings.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="1">
         <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Walmart hikes full-year outlook and gets huge tariff refund, but stock falls on sales concerns</span></div>
-        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Covered in Company Briefs · WMT shares fall despite raised guidance</span></div>
+        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Covered in Company Briefs · WMT premarket decline despite raised guidance</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 11:51 AM</div>
       </a>
       <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/micron-boise-chip-fab-expansion.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
         <div class="mmr-wire-row"><span class="mmr-wire-title">How Micron's $50 billion Boise buildout is reshaping its hometown</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 12:07 PM</div>
       </a>
+      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/ai-data-center-election-backlash.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">AI data center outrage is showing up everywhere from ads to elections</span></div>
+        <div class="mmr-wire-meta">CNBC &middot; 11:56 AM</div>
+      </a>
       <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/19/call-buying-bonanza-around-trumps-hyperliquid-comments-includes-eyebrow-raising-trades.html" target="_blank" rel="noopener" data-tag="DEV" data-impact="0">
         <div class="mmr-wire-row"><span class="mmr-wire-tag dev">DEV</span><span class="mmr-wire-title">Call-buying bonanza around Trump's Hyperliquid comments includes some eyebrow-raising trades</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 11:48 AM</div>
       </a>
-      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/public-service-loan-forgiveness-pslf-payment-counts.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Education Department recalculates student loan forgiveness counts, setting some PSLF borrowers back</span></div>
-        <div class="mmr-wire-meta">CNBC &middot; 1:26 PM</div>
-      </a>
   </div>
   <div class="mmr-desk">
     <div class="mmr-desk-head">Deals & Views</div>
+      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/heres-how-the-los-angeles-lakers-12point5b-sale-impacts-the-value-of-all-30-nba-teams.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Here's how the Los Angeles Lakers' $12.5B sale impacts the value of all 30 NBA teams</span></div>
+        <div class="mmr-wire-meta">CNBC &middot; 1:53 PM</div>
+      </a>
       <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/arctos-agrees-to-buy-10percent-of-atlanta-falcons-at-10point6-billion-valuation-sources.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
         <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Arctos agrees to buy 10% of Atlanta Falcons at $10.6 billion valuation, sources say</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 1:28 PM</div>
       </a>
-      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/heres-how-the-los-angeles-lakers-12point5b-sale-impacts-the-value-of-all-30-nba-teams.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Here's how the Los Angeles Lakers' $12.5B sale impacts the value of all 30 NBA teams</span></div>
-        <div class="mmr-wire-meta">CNBC &middot; 1:24 PM</div>
-      </a>
-      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/california-ag-bonta-paramount-wbd-lawsuit-remedies.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">California AG tells CNBC that settling Paramount-WBD lawsuit would require 'robust structural remedies'</span></div>
+      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/california-ag-bonta-paramount-wbd-lawsuit-remedies.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">California AG tells CNBC that settling Paramount-WBD lawsuit would require 'robust structural remedies'</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 12:42 PM</div>
       </a>
-      <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/20/bitcoin-surges-as-trump-crypto-execs-lead-final-push-for-clarity-act.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="1">
-        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Bitcoin surges 12% in two days as Trump, crypto execs lead last ditch effort for Clarity Act</span></div>
-        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in signal_list · BTC $72,784, +5.03%</span></div>
-        <div class="mmr-wire-meta">CNBC &middot; 12:07 PM</div>
+      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/public-service-loan-forgiveness-pslf-payment-counts.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">Education Department recalculates student loan forgiveness counts, setting some PSLF borrowers back</span></div>
+        <div class="mmr-wire-meta">CNBC &middot; 1:26 PM</div>
       </a>
   </div>
 </section>
 
 <section class="mmr-card" id="c3">
   <div class="mmr-section-head">MARKETS &middot; MARKETS DESK</div>
-  <h2 class="mmr-h2">Small Caps Lead a Broad Futures Pullback as Yields and Oil Both Push Higher</h2>
-  <p class="mmr-lead">A risk-off tape in equities is trading alongside rising yields, rising crude, and a surging bitcoin -- a cross-asset picture that resists a single tidy explanation.</p>
-  <p class="mmr-body">Equity futures are pointing to a lower open across the board, with the Russell 2000 (RTY=F) down 1.56%, the Nasdaq (NQ=F) off 1.07%, the Dow (YM=F) down 1.05%, and the S&P (ES=F) down a comparatively milder 0.72%. The VIX has jumped 6.45% to 15.85, still a low absolute level historically but a notable one-day move, while the 10-year Treasury yield (^TNX) has climbed to 4.70%, up 1.10% on the day -- a move Treasury Secretary Bessent addressed directly, telling CNBC his department's buyback operation targeting longer-dated securities, where yields have been surging, could total more than $4 billion. Crude oil (CL=F) is up 2.56% to $86.65, crossing today's chart threshold, while gold (GC=F) is modestly higher at $4,573.50 (+0.39%) and the dollar index (DX-Y.NYB) is roughly flat at 98.91.</p>
+  <h2 class="mmr-h2">Small Caps Lead a Broad Futures Pullback as Yields and Oil Climb</h2>
+  <p class="mmr-lead">A volatility pop, rising rates, and a jump in crude are complicating an otherwise ordinary risk-off morning.</p>
+  <p class="mmr-body">U.S. equity futures are broadly lower this morning, with the sell-off most pronounced in small caps: Russell 2000 futures are down 1.49%, ahead of Nasdaq futures' 1.03% decline, Dow futures' 1.06% drop, and a comparatively milder 0.68% pullback in S&P futures. The VIX is up 6.85% to 15.91 -- still a low absolute level, but a real jump in the fear gauge -- while the 10-year Treasury yield has climbed 1.14% to 4.71%, continuing a rise Treasury Secretary Bessent referenced this morning in discussing a potential Treasury buyback operation of more than $4 billion aimed at longer-dated securities. Crude oil is the standout mover in the data, up 2.60% to $86.69, a divergence from the equity weakness that doesn't fit a single clean narrative.</p>
   <div id="mmr-story-more" hidden>
-    <div class="mmr-pullquote">Small caps are underperforming large caps by more than two-to-one, a classic rising-rate signature, even as bitcoin and oil both push higher alongside the selloff.</div>
-    <p class="mmr-body">Overseas, the picture is mixed rather than uniformly risk-off: Japan's Nikkei 225 rose 1.2% and Hong Kong's Hang Seng added 0.8%, while Germany's DAX slipped 0.42% and London's FTSE 100 was essentially flat at +0.04%. Bitcoin's 5.03% jump to $72,784 stands out against the equity retreat, extending a two-day, roughly 12% surge tied to a last-ditch push by President Trump and crypto industry executives to advance the Clarity Act market-structure legislation. Rising yields, a higher VIX, and small-cap underperformance together suggest the futures weakness is more of a genuine rate-driven repricing than a single-headline reaction -- worth watching whether it holds once real volume arrives at the open.</p>
+    <div class="mmr-pullquote">Small caps are absorbing the brunt of the pullback, down more than double the S&P's decline, while oil and bitcoin move higher in the same tape.</div>
+    <p class="mmr-body">Overseas, the picture is more mixed than the U.S. futures suggest: the Nikkei 225 closed up 1.2% and the Hang Seng gained 0.8%, while the DAX slipped 0.42% and the FTSE was essentially flat, up 0.04%. Gold added 0.43% to $4,575.20 and the dollar index ticked up slightly to 98.91, a combination that doesn't read as a clean flight-to-safety trade given oil and bitcoin are both firmer too. Bitcoin's 5.09% jump to $72,830 stands apart from the equity weakness, tied by reporting this morning to a last-minute push by President Trump and crypto executives for the Clarity Act rather than to the broader macro tape.</p>
   </div>
   <button class="mmr-toggle" id="mmr-story-toggle">READ THE FULL STORY</button>
 </section>
@@ -522,21 +548,17 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
         <span class="mmr-cal-indicator">Interest Rate Decision (FOMC)</span>
         <span class="mmr-cal-date">Wednesday, September 16</span>
       </div>
-      <div class="mmr-cal-row">
-        <span class="mmr-cal-indicator">Retail Sales</span>
-        <span class="mmr-cal-date">Wednesday, September 16</span>
-      </div>
       </div>
 </section>
 
 <section class="mmr-card" id="c5">
   <div class="mmr-section-head">COMPANY BRIEFS &middot; MARKETS DESK</div>
-  <h2 class="mmr-h2">Walmart Slips Despite Raised Guidance and a Tariff Refund</h2>
-  <p class="mmr-lead">The retail giant's stock is falling premarket even after lifting its full-year outlook, as investors focus on underlying sales trends.</p>
+  <h2 class="mmr-h2">Walmart's Guidance Raise Meets a Sales-Concern Reality Check</h2>
+  <p class="mmr-lead">A rare earnings/guidance divergence tops a light morning for single-stock news.</p>
   <div class="mmr-briefs">
     <div class="mmr-brief is-lead">
       <span class="mmr-brief-lede is-lead">Walmart (WMT) --</span>
-      <p class="mmr-brief-body">Walmart raised its full-year outlook and disclosed a large tariff refund ahead of its fiscal second-quarter earnings report Thursday, but shares are falling as investors focus on sales concerns rather than the guidance hike. The report is being watched as a read on the health of the consumer and the broader K-shaped economy, where higher-income spending has stayed resilient while lower-income households show more strain.</p>
+      <p class="mmr-brief-body">Walmart raised its full-year outlook and disclosed a sizable tariff refund alongside its fiscal second-quarter results, but shares are reported lower premarket on underlying sales concerns -- a reminder that guidance headlines and the stock reaction don't always point the same direction. Coverage frames it as a read on both the health of the consumer and the broader K-shaped economy, a theme that connects to this morning's separate report on record median household stock wealth alongside record household debt.</p>
     </div>
 
   </div>
@@ -570,20 +592,20 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
 <div class="mmr-install" id="mmr-install" hidden>
   <button class="mmr-install-close" id="mmr-install-close" aria-label="Maybe later">&times;</button>
   <img class="mmr-install-icon" src="../keckos-app-icon.png" alt="">
-  <div class="mmr-install-title">Add This to Your Home Screen</div>
-  <div class="mmr-install-sub">Open the Morning Market Report in one tap, every morning &mdash; no Safari, no searching.</div>
+  <div class="mmr-install-title">Add This App to Your Home Screen</div>
+  <div class="mmr-install-sub">Get the Morning Market Report as an app on your Home Screen &mdash; one tap, every morning, no Safari, no searching.</div>
   <div class="mmr-install-steps">
     <div class="mmr-install-step">
       <span class="mmr-install-step-num">1</span>
-      <span class="mmr-install-step-text">Tap <strong>Share</strong> (or <strong>&bull;&bull;&bull;</strong>) in Safari's toolbar</span>
+      <span class="mmr-install-step-text">Tap <strong>&bull;&bull;&bull;</strong> in Safari's toolbar</span>
     </div>
     <div class="mmr-install-step">
       <span class="mmr-install-step-num">2</span>
-      <span class="mmr-install-step-text">Scroll down and tap <strong>&ldquo;Add to Home Screen&rdquo;</strong></span>
+      <span class="mmr-install-step-text">Tap <strong>Share</strong></span>
     </div>
     <div class="mmr-install-step">
       <span class="mmr-install-step-num">3</span>
-      <span class="mmr-install-step-text">Tap <strong>Add</strong> to confirm</span>
+      <span class="mmr-install-step-text">Tap <strong>&ldquo;Add to Home Screen&rdquo;</strong></span>
     </div>
   </div>
   <div class="mmr-install-pointer">
