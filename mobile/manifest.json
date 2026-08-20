@@ -9,13 +9,13 @@
   "theme_color": "#121212",
   "icons": [
     {
-      "src": "../keckos-logo.png",
+      "src": "../keckos-app-icon.png",
       "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "../keckos-logo.png",
+      "src": "../keckos-app-icon.png",
       "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "maskable"
