@@ -72,18 +72,21 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
 ::selection{background:#3D2E14}
 
 .mmr-header{position:sticky;top:0;z-index:30;background:rgba(18,18,18,.95);backdrop-filter:blur(16px);border-bottom:1px solid #4A3A34}
-.mmr-header-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:11px;padding:9px 14px 5px}
-.mmr-logo{flex:none;width:26px;height:26px;object-fit:contain;opacity:.9}
-.mmr-title-block{display:flex;flex-direction:column;flex:1;min-width:0}
-.mmr-title{font:700 16px/1.05 'Playfair Display',Georgia,serif;color:#F2ECE6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mmr-header-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:10px 14px 8px}
+/* Logo sized to visually span the 3-line title block beside it
+   (changed 2026-08-20 -- was a small 26-28px icon that looked
+   undersized once the header grew to 3 lines of text). */
+.mmr-logo{flex:none;width:48px;height:48px;object-fit:contain;opacity:.9}
+.mmr-title-block{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.mmr-title{font:700 16px/1.15 'Playfair Display',Georgia,serif;color:#F2ECE6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Row 2: "KeckOS · <full spelled-out date>". Row 3: "Edition N of 3 ·
+   Pulled <time> ET", also spelled out rather than abbreviated. Both
+   allow wrapping (no nowrap/ellipsis) rather than truncating -- the
+   date and pull time need to always stay fully readable, per explicit
+   user feedback after an earlier version clipped them. */
+.mmr-dateline-row{font:400 10px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#AD988D}
 .mmr-share{flex:none;width:38px;height:38px;border-radius:2px;background:#1E1B1B;border:1px solid #4A3A34;display:flex;align-items:center;justify-content:center;font:400 13px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;color:#AD988D}
 .mmr-share.is-shared{border-color:#DCB24E;color:#DCB24E}
-/* KeckOS/date/edition/pull-time as their OWN full-width row (changed
-   2026-08-20) -- squeezed next to the title between two header
-   buttons, it truncated exactly the two things (date, pull time) that
-   need to always be readable. On its own row it has the full header
-   width and never competes with the logo/buttons for space. */
-.mmr-dateline{max-width:1180px;margin:0 auto;padding:0 14px 8px;font:400 10px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#AD988D}
 /* Cross-link to the desktop broadsheet (added 2026-08-20) -- the mobile
    counterpart to the desktop template's .view-toggle link. Manual
    toggle, not device detection; each page is its own stable URL.
@@ -197,11 +200,12 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
     <img class="mmr-logo" src="../keckos-logo.png" alt="" aria-hidden="true">
     <div class="mmr-title-block">
       <div class="mmr-title">Morning Market Report</div>
+      <div class="mmr-dateline-row">KeckOS &middot; Thursday, August 20, 2026</div>
+      <div class="mmr-dateline-row">Edition 1 of 3 &middot; Pulled 7:24 AM ET</div>
     </div>
     <a class="mmr-desktop-link" href="../" aria-label="Desktop edition"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="16" x2="12" y2="20"/></svg></a>
     <button class="mmr-share" id="mmr-share" aria-label="Share report"><span id="mmr-share-glyph">&#8599;</span></button>
   </div>
-  <div class="mmr-dateline">KeckOS &middot; Aug 20 &middot; Ed. 1 of 3 &middot; 7:14 AM ET</div>
   <div class="mmr-tabs">
     <button class="mmr-tab" data-i="0">Morning</button>
     <button class="mmr-tab" data-i="1">Glance</button>
@@ -212,7 +216,7 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
   </div>
   <button class="mmr-signal" id="mmr-signal-strip">
     <span class="mmr-signal-dot"></span>
-    <span class="mmr-signal-label">5 MOVING THE TAPE &middot; 5 NEW</span>
+    <span class="mmr-signal-label">5 MOVING THE TAPE &middot; 4 NEW</span>
     <span class="mmr-signal-spacer"></span>
     <span class="mmr-signal-view">VIEW &rarr;</span>
   </button>
@@ -222,52 +226,52 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
 
 <section class="mmr-card" id="c0">
   <div class="mmr-section-head">THIS MORNING &middot; Premarket</div>
-  <h1 class="mmr-h1">Oil Jumps, Yields Slip as Futures Drift Lower Ahead of Walmart</h1>
-  <p class="mmr-lead">Crude is up nearly 3% and the 10-year yield is easing back, while U.S. equity futures are modestly lower across the board. Bitcoin is jumping almost 4% on Trump's push for crypto legislation, and Walmart's earnings this morning will be an early read on the consumer.</p>
+  <h1 class="mmr-h1">Crude jumps, yields cool, futures drift lower</h1>
+  <p class="mmr-lead">Oil is up nearly 3% and bitcoin is surging after Trump's crypto push, but stock futures are modestly softer as traders digest Alibaba's earnings miss and wait on Walmart's report. The 10-year yield has eased for a second session after Wednesday's rally.</p>
   <div class="mmr-leads">
     <div class="mmr-lead-row is-lead">
       <span class="mmr-lead-label">The Standout</span>
-      <span class="mmr-lead-text">WTI crude is up 2.79% to $86.85 amid escalating Iran rhetoric from the Trump administration, the sharpest move on the board this morning.</span>
+      <span class="mmr-lead-text">WTI crude is up 2.83% to $86.88 as Trump's threatened 'Economic D-Day' pressure campaign against Iran keeps a geopolitical premium in oil.</span>
     </div>
     <div class="mmr-lead-row">
       <span class="mmr-lead-label">The Outlier</span>
-      <span class="mmr-lead-text">Bitcoin is surging 3.80% to $71,933 after Trump urged Congress to pass the crypto Clarity Act, even as the dollar index and gold both slip.</span>
+      <span class="mmr-lead-text">Bitcoin has jumped 3.74% to $71,890 after Trump urged Congress to pass the crypto Clarity Act, even as the dollar index sits nearly flat.</span>
     </div>
     <div class="mmr-lead-row">
       <span class="mmr-lead-label">The Rest of the Tape</span>
-      <span class="mmr-lead-text">Equity futures are drifting lower in a narrow band (S&P -0.16% to Nasdaq -0.38%) as the 10-year yield eases to 4.65% and the VIX ticks up modestly to 15.11.</span>
+      <span class="mmr-lead-text">Equity futures are broadly softer -- S&P, Nasdaq, Dow and Russell futures all down roughly a quarter to half a percent -- with the VIX up nearly 2% to 15.18 and the 10-year yield easing 1.13% to 4.65%.</span>
     </div>
   </div>
   <div class="mmr-card-footer">KeckOS Markets Desk -- synthesized from live data and headlines below.</div>
 </section>
 
 <section class="mmr-card" id="c1">
-  <div class="mmr-section-head">MARKETS AT A GLANCE &middot; 7:14 AM ET</div>
+  <div class="mmr-section-head">MARKETS AT A GLANCE &middot; 7:24 AM ET</div>
   <div class="mmr-glance-grid">
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">S&P Fut.</span>
-      <span class="mmr-glance-value">7,726.00</span>
-      <span class="mmr-glance-chg mmr-neg">-0.16%</span>
+      <span class="mmr-glance-value">7,722.50</span>
+      <span class="mmr-glance-chg mmr-neg">-0.21%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Nasdaq Fut.</span>
-      <span class="mmr-glance-value">29,500.00</span>
-      <span class="mmr-glance-chg mmr-neg">-0.38%</span>
+      <span class="mmr-glance-value">29,473.00</span>
+      <span class="mmr-glance-chg mmr-neg">-0.47%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Dow Fut.</span>
-      <span class="mmr-glance-value">53,427</span>
-      <span class="mmr-glance-chg mmr-neg">-0.24%</span>
-    </div>
-    <div class="mmr-glance-cell">
-      <span class="mmr-glance-label">Russell Fut.</span>
-      <span class="mmr-glance-value">3,038.30</span>
+      <span class="mmr-glance-value">53,416</span>
       <span class="mmr-glance-chg mmr-neg">-0.26%</span>
     </div>
     <div class="mmr-glance-cell">
+      <span class="mmr-glance-label">Russell Fut.</span>
+      <span class="mmr-glance-value">3,036.30</span>
+      <span class="mmr-glance-chg mmr-neg">-0.32%</span>
+    </div>
+    <div class="mmr-glance-cell">
       <span class="mmr-glance-label">VIX</span>
-      <span class="mmr-glance-value">15.11</span>
-      <span class="mmr-glance-chg mmr-pos">+1.48%</span>
+      <span class="mmr-glance-value">15.18</span>
+      <span class="mmr-glance-chg mmr-pos">+1.95%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">10-Yr Yield</span>
@@ -276,23 +280,23 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">WTI Crude</span>
-      <span class="mmr-glance-value">$86.85</span>
-      <span class="mmr-glance-chg mmr-pos">+2.79%</span>
+      <span class="mmr-glance-value">$86.88</span>
+      <span class="mmr-glance-chg mmr-pos">+2.83%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Gold</span>
-      <span class="mmr-glance-value">$4,545.00</span>
-      <span class="mmr-glance-chg mmr-neg">-0.23%</span>
+      <span class="mmr-glance-value">$4,540.10</span>
+      <span class="mmr-glance-chg mmr-neg">-0.34%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Dollar Index</span>
-      <span class="mmr-glance-value">98.69</span>
-      <span class="mmr-glance-chg mmr-neg">-0.12%</span>
+      <span class="mmr-glance-value">98.73</span>
+      <span class="mmr-glance-chg mmr-neg">-0.08%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Bitcoin</span>
-      <span class="mmr-glance-value">$71,933</span>
-      <span class="mmr-glance-chg mmr-pos">+3.80%</span>
+      <span class="mmr-glance-value">$71,890</span>
+      <span class="mmr-glance-chg mmr-pos">+3.74%</span>
     </div>
   </div>
 </section>
@@ -302,12 +306,12 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
   <div class="mmr-wfilters">
     <button class="mmr-wfilter is-active" data-filter="all">ALL 12</button>
     <button class="mmr-wfilter" data-filter="impact">IMPACT 5</button>
-    <button class="mmr-wfilter" data-filter="new">NEW &middot; DEV 5</button>
+    <button class="mmr-wfilter" data-filter="new">NEW &middot; DEV 4</button>
   </div>
   <div class="mmr-desk">
     <div class="mmr-desk-head">Markets & Macro</div>
-      <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/20/bond-yields-edge-higher-as-traders-digest-treasury-debt-buyback-plan.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="1">
-        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Bond yields edge higher as traders digest Treasury debt buyback plan</span></div>
+      <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/20/bond-yields-edge-higher-as-traders-digest-treasury-debt-buyback-plan.html" target="_blank" rel="noopener" data-tag="" data-impact="1">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">Bond yields edge higher as traders digest Treasury debt buyback plan</span></div>
         <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in Markets · 10-yr yield 4.65%, -1.13%</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 4:57 AM</div>
       </a>
@@ -319,14 +323,15 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
         <div class="mmr-wire-row"><span class="mmr-wire-title">Trump bemoans Fed interest rate policy, says U.S. should be paying much less</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 5:29 PM</div>
       </a>
-      <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/19/us-iran-war-trump-hormuz-economic-warfare.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="1">
-        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Trump threatens 'Economic D-Day' for Iran and 'tremendous' consequences for its backers</span></div>
-        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in Signals · WTI crude $86.85, +2.79%</span></div>
+      <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/19/us-iran-war-trump-hormuz-economic-warfare.html" target="_blank" rel="noopener" data-tag="" data-impact="1">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">Trump threatens 'Economic D-Day' for Iran and 'tremendous' consequences for its backers</span></div>
+        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in signal_list · WTI crude $86.88, +2.83%</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 5:30 AM</div>
       </a>
-      <a class="mmr-wire-item" href="https://stocktwits.com/news-articles/markets/equity/us-stock-index-futures-climb-as-yields-cool-off-amid-treasury-support-nvda-mrna-mrvl-lowe-in-focus/cZYdxACRJlH" target="_blank" rel="noopener" data-tag="" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-title">US Stock Index Futures Climb As Yields Cool Off Amid Treasury Support -- NVDA, MRNA, MRVL, LOWE In Focus</span></div>
-        <div class="mmr-wire-meta">Stocktwits &middot; 7:15 PM</div>
+      <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/20/cryptocurrencies-trump-bitcoin-ethereum.html" target="_blank" rel="noopener" data-tag="" data-impact="1">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">Bitcoin, ether surge as Trump urges Congress to pass crypto Clarity Act</span></div>
+        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in signal_list · BTC $71,890, +3.74%</span></div>
+        <div class="mmr-wire-meta">CNBC &middot; 5:42 AM</div>
       </a>
   </div>
   <div class="mmr-desk">
@@ -338,12 +343,16 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
       </a>
       <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/20/walmart-wmt-q2-2027-earnings.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="1">
         <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Walmart hikes full-year outlook, says it will use huge tariff refund to keep prices low</span></div>
-        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Covered in Company Briefs · WMT raised full-year outlook</span></div>
+        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Covered in Company Briefs · WMT full-year outlook raised</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 7:13 AM</div>
       </a>
-      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/micron-boise-chip-fab-expansion.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-title">How Micron's $50 billion Boise buildout is reshaping its hometown</span></div>
+      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/micron-boise-chip-fab-expansion.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">How Micron's $50 billion Boise buildout is reshaping its hometown</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 7:00 AM</div>
+      </a>
+      <a class="mmr-wire-item" href="https://stocktwits.com/news-articles/markets/equity/us-stock-index-futures-climb-as-yields-cool-off-amid-treasury-support-nvda-mrna-mrvl-lowe-in-focus/cZYdxACRJlH" target="_blank" rel="noopener" data-tag="" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">US Stock Index Futures Climb As Yields Cool Off Amid Treasury Support -- NVDA, MRNA, MRVL, LOWE In Focus</span></div>
+        <div class="mmr-wire-meta">Stocktwits &middot; 7:15 PM</div>
       </a>
       <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/19/hyundai-luxury-genesis-ev.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
         <div class="mmr-wire-row"><span class="mmr-wire-title">Hyundai's new flagship vehicle is a large luxury Genesis EV</span></div>
@@ -352,13 +361,8 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
   </div>
   <div class="mmr-desk">
     <div class="mmr-desk-head">Deals & Views</div>
-      <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/20/cryptocurrencies-trump-bitcoin-ethereum.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="1">
-        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Bitcoin, ether surge as Trump urges Congress to pass crypto Clarity Act</span></div>
-        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in Signals · BTC $71,933, +3.80%</span></div>
-        <div class="mmr-wire-meta">CNBC &middot; 5:42 AM</div>
-      </a>
-      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/workers-cant-agree-if-junior-employees-should-use-ai-at-work-cnbc-survey.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-title">Workers can't agree if junior employees should use AI at work: CNBC survey</span></div>
+      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/workers-cant-agree-if-junior-employees-should-use-ai-at-work-cnbc-survey.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Workers can't agree if junior employees should use AI at work: CNBC survey</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 7:00 AM</div>
       </a>
       <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/unitree-humanoid-robots-chatgpt-moment.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
@@ -370,12 +374,12 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
 
 <section class="mmr-card" id="c3">
   <div class="mmr-section-head">MARKETS &middot; MARKETS DESK</div>
-  <h2 class="mmr-h2">Crude Climbs on Iran Rhetoric, Yields Ease Back</h2>
-  <p class="mmr-lead">Futures are modestly lower across the board as oil jumps and Treasury yields pull back from Wednesday's highs.</p>
-  <p class="mmr-body">Equity futures are pointing to a soft open, with the S&P 500 (ES=F) down 0.16% to 7,726.00, the Nasdaq (NQ=F) off 0.38% to 29,500.00, the Dow (YM=F) down 0.24% to 53,427, and small caps (RTY=F) lower by 0.26% to 3,038.30. The standout move is in crude oil, with WTI (CL=F) up 2.79% to $86.85 as the Trump administration escalates pressure on Iran, threatening an "Economic D-Day" and further sanctions on its backers. The 10-year Treasury yield (^TNX) is easing to 4.65%, down 1.13%, as traders digest a Treasury debt buyback plan a day after a rally in long bonds. The VIX is up modestly to 15.11, still a low reading overall.</p>
+  <h2 class="mmr-h2">Oil and bitcoin surge as stock futures ease back</h2>
+  <p class="mmr-lead">A firmer risk tone in commodities and crypto contrasts with modestly softer equity futures ahead of Walmart's earnings.</p>
+  <p class="mmr-body">Stock futures are pointing to a quieter, slightly lower open, with S&P 500 futures (ES=F) off 0.21% to 7,722.50, Nasdaq futures (NQ=F) down 0.47% to 29,473.00, Dow futures (YM=F) down 0.26% to 53,416, and Russell 2000 futures (RTY=F) down 0.32% to 3,036.30. The VIX has ticked up 1.95% to 15.18, still a low absolute level, while the 10-year Treasury yield (^TNX) eased 1.13% to 4.65% as bond markets extend Wednesday's rally even as traders weigh a new Treasury debt buyback plan. The standout move is in commodities: WTI crude (CL=F) is up 2.83% to $86.88 on the back of Trump's threatened 'Economic D-Day' pressure campaign against Iran, while gold (GC=F) is down 0.34% to $4,540.10 and the dollar index (DX-Y.NYB) is roughly flat at 98.73. Bitcoin (BTC-USD) has jumped 3.74% to $71,890 after Trump urged Congress to pass the crypto Clarity Act.</p>
   <div id="mmr-story-more" hidden>
-    <div class="mmr-pullquote">Crude is up nearly 3% on renewed Iran pressure even as yields ease and equity futures drift lower in a narrow band.</div>
-    <p class="mmr-body">Overseas, Asian markets outperformed while Europe lagged: the Nikkei 225 gained 1.2% to 66,216.79 and the Hang Seng added 0.8% to 25,698.49, while Germany's DAX slipped 0.52% to 25,991.16 and London's FTSE 100 fell 0.35% to 10,709.71. Gold (GC=F) is down 0.23% to $4,545.00 and the dollar index (DX-Y.NYB) is off 0.12% to 98.69, a fairly quiet cross-asset picture outside of oil and crypto. Bitcoin (BTC-USD) is up 3.80% to $71,933 after President Trump urged Congress to pass the crypto Clarity Act, a regulatory framework bill for the sector -- a notable move given the dollar and gold aren't showing a comparable risk-on or risk-off signal today.</p>
+    <div class="mmr-pullquote">Oil's 2.83% jump on Iran pressure and bitcoin's 3.74% surge on crypto-legislation news stand out against a broadly softer, quieter equity futures tape.</div>
+    <p class="mmr-body">Overseas, Asian markets outperformed European ones overnight: Japan's Nikkei 225 rose 1.2% to 66,216.79 and Hong Kong's Hang Seng added 0.8% to 25,698.49, while Germany's DAX slipped 0.47% to 26,004.40 and London's FTSE 100 eased 0.23% to 10,722.24. The split suggests the pressure on European equities and the modest pullback in U.S. futures are more about digesting recent gains and today's Walmart earnings than any single overnight catalyst, while Asia continued to build on its own momentum.</p>
   </div>
   <button class="mmr-toggle" id="mmr-story-toggle">READ THE FULL STORY</button>
 </section>
@@ -383,22 +387,22 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
 <section class="mmr-card" id="c4">
   <div class="mmr-section-head">TODAY'S CALENDAR &middot; MARKETS DESK</div>
   <h2 class="mmr-h2">Today's Calendar</h2>
-  <p class="mmr-lead">Walmart's earnings are the confirmed scheduled item this morning; no other economic data release was identified in today's news pull.</p>
-  <p class="mmr-body">Walmart is set to report fiscal second-quarter earnings this morning, with the company already indicating ahead of the print that it is raising its full-year outlook and will use tariff-refund proceeds to keep prices low -- a closely watched read on the consumer and the broader K-shaped economy. Beyond that, today's news pull did not surface a specific scheduled economic data release (no CPI, jobs, PCE, or retail sales calendar item appeared in the sources checked); readers should not assume one is coming based on the geopolitical and market-structure headlines circulating this morning (the Iran story and the $40 trillion federal debt milestone are both notable but are not scheduled data releases).</p>
+  <p class="mmr-lead">No specific scheduled economic release was identified in this morning's news pull.</p>
+  <p class="mmr-body">This morning's news pull did not surface a day-by-day economic calendar item scheduled for release today. The market's attention is instead on Walmart's fiscal second-quarter earnings, due out this morning, which will offer a read on the consumer and the broader K-shaped economy -- that is a company earnings report, not a scheduled macro data release, and the two should not be conflated. Beyond that, ongoing threads worth watching include the Treasury's debt buyback plan (still being digested by bond markets) and the Trump administration's Iran pressure campaign, neither of which is a dated calendar event.</p>
 </section>
 
 <section class="mmr-card" id="c5">
   <div class="mmr-section-head">COMPANY BRIEFS &middot; MARKETS DESK</div>
   <h2 class="mmr-h2">Company Briefs</h2>
-  <p class="mmr-lead">Alibaba slides on a steep earnings miss while Walmart gets ahead of its own print with an upbeat outlook.</p>
+  <p class="mmr-lead">Alibaba slides on a steep earnings miss while Walmart raises its outlook ahead of today's report.</p>
   <div class="mmr-briefs">
     <div class="mmr-brief is-lead">
       <span class="mmr-brief-lede is-lead">Alibaba (BABA) --</span>
-      <p class="mmr-brief-body">U.S.-listed shares fell roughly 3% in premarket trading after the company reported a 75% drop in net income for the June quarter, which it attributed to heavy AI-related spending. The report adds to a broader theme playing out across the sector: markets have begun distinguishing between AI infrastructure spend that's paying off and spend that's outpacing near-term returns.</p>
+      <p class="mmr-brief-body">U.S.-listed shares fell roughly 3% in premarket trading after Alibaba posted a 75% drop in net income for the June quarter, with the company citing heavy AI spending as the drag on profitability even as cloud investment continues.</p>
     </div>
     <div class="mmr-brief mmr-brief-extra" hidden>
       <span class="mmr-brief-lede">Walmart (WMT) --</span>
-      <p class="mmr-brief-body">Ahead of its fiscal second-quarter earnings report due today, Walmart said it is raising its full-year outlook and will use a large tariff refund to help keep prices low for consumers. The report is expected to offer an early read on consumer health and the K-shaped economy this morning.</p>
+      <p class="mmr-brief-body">Walmart raised its full-year outlook and said it will use a large tariff refund to keep prices low, ahead of its fiscal second-quarter earnings report expected today -- a report the market is watching closely as a read on the health of the consumer and the broader K-shaped economy.</p>
     </div>
     <button class="mmr-toggle" id="mmr-briefs-toggle" data-show-label="SHOW 1 MORE BRIEF">SHOW 1 MORE BRIEF</button>
   </div>
