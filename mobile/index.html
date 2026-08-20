@@ -193,11 +193,11 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
 }
 
 .mmr-section-head{font:400 10px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#AD988D;padding-bottom:9px;margin-bottom:14px;border-bottom:1px solid #4A3A34}
-/* Fed Watch's "headliner" treatment on an actual FOMC decision day
-   (added 2026-08-20) -- calendar_badge is computed in Python
-   (fed_watch_status()), never LLM-authored, so this only ever appears
-   when today genuinely is the concluding day of a scheduled FOMC
-   meeting. Empty/omitted every other day. */
+/* Fed Watch's "headliner" treatment (reworked 2026-08-20 from
+   FOMC-only to any tracked indicator) -- badge is computed in Python
+   (build_calendar_section()), never LLM-authored, and appears whenever
+   ANY row in the economic calendar table (FOMC, CPI, PPI, PCE, jobs,
+   GDP, retail sales) lands today. Empty/omitted every other day. */
 .mmr-fed-badge{display:inline-block;font-weight:700;letter-spacing:.08em;color:#121212;background:#DCB24E;padding:2px 7px;border-radius:2px;margin-left:2px}
 .mmr-h1,.mmr-h2{margin:0 0 14px;font:700 26px/1.16 'Playfair Display',Georgia,serif;color:#F2ECE6;text-wrap:pretty}
 .mmr-lead{margin:0 0 18px;font:400 16px/1.55 Georgia,serif;color:#F2ECE6;text-wrap:pretty}
@@ -216,6 +216,19 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
 .mmr-glance-value{font:700 20px/1 'Playfair Display',Georgia,serif;color:#F2ECE6;font-variant-numeric:tabular-nums}
 .mmr-glance-chg{font:400 12px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;font-variant-numeric:tabular-nums}
 .mmr-pos{color:#7FB08A} .mmr-neg{color:#CC7A63} .mmr-flat{color:#D6C6BC}
+
+/* Economic calendar table (Fed Watch, added 2026-08-20) -- same
+   hairline-grid technique as Markets at a Glance (gap:1px over a
+   --rule-colored background draws the dividers) rather than a
+   horizontally-scrolling wide <table>, which is poor phone UX.
+   .is-today gets the same treatment as an impact-flagged Wire item:
+   a gold left rule, nothing louder than that. */
+.mmr-cal-table{display:flex;flex-direction:column;gap:1px;background:#4A3A34;margin-top:14px}
+.mmr-cal-row{background:#1E1B1B;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-left:2px solid transparent}
+.mmr-cal-row.is-today{border-left-color:#DCB24E}
+.mmr-cal-indicator{font:400 14px Georgia,serif;color:#F2ECE6}
+.mmr-cal-date{flex:none;font:400 12px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;color:#AD988D;text-align:right}
+.mmr-cal-row.is-today .mmr-cal-date{color:#DCB24E;font-weight:700}
 
 .mmr-wfilters{display:flex;gap:14px;margin-top:12px}
 .mmr-wfilter{padding:7px 0;min-height:36px;font:400 10px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;letter-spacing:.16em;text-transform:uppercase;border:none;border-bottom:2px solid transparent;color:#AD988D}
@@ -277,7 +290,7 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
     <div class="mmr-title-block">
       <div class="mmr-title">Morning Market Report</div>
       <div class="mmr-dateline-row">Thursday, Aug 20, 2026</div>
-      <div class="mmr-dateline-row">Edition 1 of 3 &middot; 12:34 PM ET</div>
+      <div class="mmr-dateline-row">Edition 1 of 3 &middot; 1:27 PM ET</div>
     </div>
     <a class="mmr-desktop-link" href="../" aria-label="Desktop edition"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="16" x2="12" y2="20"/></svg></a>
     <button class="mmr-share" id="mmr-share" aria-label="Share report"><span id="mmr-share-glyph">&#8599;</span></button>
@@ -292,7 +305,7 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
   </div>
   <button class="mmr-signal" id="mmr-signal-strip">
     <span class="mmr-signal-dot"></span>
-    <span class="mmr-signal-label">4 MOVING THE TAPE &middot; 9 NEW</span>
+    <span class="mmr-signal-label">3 MOVING THE TAPE &middot; 6 NEW</span>
     <span class="mmr-signal-spacer"></span>
     <span class="mmr-signal-view">VIEW &rarr;</span>
   </button>
@@ -310,77 +323,77 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
 
 <section class="mmr-card" id="c0">
   <div class="mmr-section-head">THIS MORNING &middot; Premarket</div>
-  <h1 class="mmr-h1">Futures Slide as Yields and Oil Jump, Risk Appetite Splits</h1>
-  <p class="mmr-lead">Equity futures are broadly lower this morning, led by small caps, while the VIX jumps nearly 7% and the 10-year yield pushes toward 4.70%. Crude is up over 2.5% and bitcoin has surged more than 4%, a split tape where safe-haven and risk assets are both catching a bid even as stock futures retreat.</p>
+  <h1 class="mmr-h1">Risk-Off Across the Board as Yields Climb and Volatility Wakes Up</h1>
+  <p class="mmr-lead">Futures are down across the board -- small caps hit hardest -- while the VIX jumps over 5% and the 10-year yield pushes toward 4.70%. Oil is up more than 2% and bitcoin is bucking the risk-off mood with a 5% surge, so this isn't a clean story of investors fleeing risk everywhere at once.</p>
   <div class="mmr-leads">
     <div class="mmr-lead-row is-lead">
       <span class="mmr-lead-label">The Standout</span>
-      <span class="mmr-lead-text">Russell 2000 futures are down 1.42%, the weakest of the four major index futures, as small caps take the brunt of today's risk-off tilt.</span>
+      <span class="mmr-lead-text">Russell 2000 futures are down 1.58%, the weakest of the four major index futures, while the VIX has jumped 5.44% to 15.70 -- small caps and volatility both moving the same direction points to a broader risk-off tone rather than one sector's problem.</span>
     </div>
     <div class="mmr-lead-row">
       <span class="mmr-lead-label">The Outlier</span>
-      <span class="mmr-lead-text">Bitcoin is up 4.51% to $72,422, extending a two-day, roughly 12% surge tied to a Trump-backed push alongside crypto executives for the Clarity Act.</span>
+      <span class="mmr-lead-text">Bitcoin is up 5.00% to $72,763 even as equity futures sell off, a divergence tied to a fresh push by Trump and crypto executives to get the Clarity Act passed.</span>
     </div>
     <div class="mmr-lead-row">
       <span class="mmr-lead-label">The Rest of the Tape</span>
-      <span class="mmr-lead-text">Crude is up 2.57% to $86.66 and the VIX has jumped 6.85% to 15.91, both pointing to a market pricing in more near-term uncertainty even as gold and the dollar stay comparatively quiet.</span>
+      <span class="mmr-lead-text">Crude is up 2.13% to $86.29 and the 10-year yield has climbed 0.92% to 4.70%, a combination that -- alongside Treasury's talk of a bond-buyback operation -- suggests rate and inflation pressure is doing at least as much work on sentiment as any single headline.</span>
     </div>
   </div>
   <div class="mmr-card-footer">KeckOS Markets Desk -- synthesized from live data and headlines below.</div>
 </section>
 
 <section class="mmr-card" id="c1">
-  <div class="mmr-section-head">MARKETS AT A GLANCE &middot; 12:34 PM ET</div>
+  <div class="mmr-section-head">MARKETS AT A GLANCE &middot; 1:27 PM ET</div>
   <div class="mmr-glance-grid">
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">S&P Fut.</span>
-      <span class="mmr-glance-value">7,697.50</span>
-      <span class="mmr-glance-chg mmr-neg">-0.53%</span>
+      <span class="mmr-glance-value">7,687.75</span>
+      <span class="mmr-glance-chg mmr-neg">-0.66%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Nasdaq Fut.</span>
-      <span class="mmr-glance-value">29,351.25</span>
-      <span class="mmr-glance-chg mmr-neg">-0.88%</span>
+      <span class="mmr-glance-value">29,306.00</span>
+      <span class="mmr-glance-chg mmr-neg">-1.04%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Dow Fut.</span>
-      <span class="mmr-glance-value">53,079</span>
-      <span class="mmr-glance-chg mmr-neg">-0.89%</span>
+      <span class="mmr-glance-value">53,041</span>
+      <span class="mmr-glance-chg mmr-neg">-0.96%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Russell Fut.</span>
-      <span class="mmr-glance-value">3,002.80</span>
-      <span class="mmr-glance-chg mmr-neg">-1.42%</span>
+      <span class="mmr-glance-value">2,997.90</span>
+      <span class="mmr-glance-chg mmr-neg">-1.58%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">VIX</span>
-      <span class="mmr-glance-value">15.91</span>
-      <span class="mmr-glance-chg mmr-pos">+6.85%</span>
+      <span class="mmr-glance-value">15.70</span>
+      <span class="mmr-glance-chg mmr-pos">+5.44%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">10-Yr Yield</span>
       <span class="mmr-glance-value">4.70%</span>
-      <span class="mmr-glance-chg mmr-pos">+1.01%</span>
+      <span class="mmr-glance-chg mmr-pos">+0.92%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">WTI Crude</span>
-      <span class="mmr-glance-value">$86.66</span>
-      <span class="mmr-glance-chg mmr-pos">+2.57%</span>
+      <span class="mmr-glance-value">$86.29</span>
+      <span class="mmr-glance-chg mmr-pos">+2.13%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Gold</span>
-      <span class="mmr-glance-value">$4,567.00</span>
-      <span class="mmr-glance-chg mmr-pos">+0.25%</span>
+      <span class="mmr-glance-value">$4,567.40</span>
+      <span class="mmr-glance-chg mmr-pos">+0.26%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Dollar Index</span>
-      <span class="mmr-glance-value">98.88</span>
-      <span class="mmr-glance-chg mmr-pos">+0.07%</span>
+      <span class="mmr-glance-value">98.90</span>
+      <span class="mmr-glance-chg mmr-pos">+0.10%</span>
     </div>
     <div class="mmr-glance-cell">
       <span class="mmr-glance-label">Bitcoin</span>
-      <span class="mmr-glance-value">$72,422</span>
-      <span class="mmr-glance-chg mmr-pos">+4.51%</span>
+      <span class="mmr-glance-value">$72,763</span>
+      <span class="mmr-glance-chg mmr-pos">+5.00%</span>
     </div>
   </div>
 </section>
@@ -389,45 +402,48 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
   <div class="mmr-section-head">THE WIRE &middot; DENSE DIGEST</div>
   <div class="mmr-wfilters">
     <button class="mmr-wfilter is-active" data-filter="all">ALL 12</button>
-    <button class="mmr-wfilter" data-filter="impact">IMPACT 4</button>
-    <button class="mmr-wfilter" data-filter="new">NEW &middot; DEV 9</button>
+    <button class="mmr-wfilter" data-filter="impact">IMPACT 3</button>
+    <button class="mmr-wfilter" data-filter="new">NEW &middot; DEV 6</button>
   </div>
   <div class="mmr-desk">
     <div class="mmr-desk-head">Markets & Macro</div>
       <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/20/bessent-says-treasury-buyback-operation-could-be-more-than-4-billion.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="1">
         <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Bessent says Treasury buyback operation could be more than $4 billion</span></div>
-        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in Markets · 10-yr yield +1.01% to 4.70%</span></div>
+        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in Markets · 10-yr yield +0.92% to 4.70%</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 11:35 AM</div>
       </a>
       <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/20/bitcoin-surges-as-trump-crypto-execs-lead-final-push-for-clarity-act.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="1">
         <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Bitcoin surges 12% in two days as Trump, crypto execs lead last ditch effort for Clarity Act</span></div>
-        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in signal_list · BTC +4.51% to $72,422</span></div>
+        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in signal_list · BTC-USD $72,763, +5.00%</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 12:07 PM</div>
-      </a>
-      <a class="mmr-wire-item" href="https://247wallst.com/investing/2026/08/20/history-says-2026s-market-rally-starts-in-42-days-per-jp-morgan-data/" target="_blank" rel="noopener" data-tag="" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-title">History Says 2026's Market Rally Starts in 42 Days, Per JP Morgan Data</span></div>
-        <div class="mmr-wire-meta">24/7 Wall St. &middot; 10:13 AM</div>
       </a>
       <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/bessent-economy-iran-war-trump.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
         <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Bessent says U.S. likely won't restart large-scale Iran combat as it steps up economic pressure</span></div>
-        <div class="mmr-wire-meta">CNBC &middot; 12:14 PM</div>
+        <div class="mmr-wire-meta">CNBC &middot; 1:19 PM</div>
+      </a>
+      <a class="mmr-wire-item" href="https://247wallst.com/investing/2026/08/20/median-stock-portfolio-hits-record-350000-household-share-of-nation-debt-grows-to-296500/" target="_blank" rel="noopener" data-tag="" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">Median Stock Portfolio Hits Record $350,000 -- Household Share of Nation Debt Grows to $296,500</span></div>
+        <div class="mmr-wire-meta">24/7 Wall St. &middot; 12:43 PM</div>
+      </a>
+      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/commercial-real-estate-demand-nar-data.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">Where commercial real estate demand is the highest, according to new data</span></div>
+        <div class="mmr-wire-meta">CNBC &middot; 10:21 AM</div>
       </a>
   </div>
   <div class="mmr-desk">
     <div class="mmr-desk-head">Companies</div>
       <a class="mmr-wire-item is-impact" href="https://www.cnbc.com/2026/08/20/walmart-wmt-q2-2027-earnings.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="1">
         <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Walmart hikes full-year outlook and gets huge tariff refund, but stock falls on sales concerns</span></div>
-        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in Company Briefs · WMT -8% premarket</span></div>
+        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Company brief · WMT premarket decline despite raised guidance</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 11:51 AM</div>
       </a>
-      <a class="mmr-wire-item is-impact" href="https://247wallst.com/investing/2026/08/20/walmart-drops-8-on-slowest-same-store-sales-growth-since-2020-target-holds-steady-costco-eases/" target="_blank" rel="noopener" data-tag="DEV" data-impact="1">
-        <div class="mmr-wire-row"><span class="mmr-wire-tag dev">DEV</span><span class="mmr-wire-title">Walmart Drops 8% on Slowest Same-Store Sales Growth Since 2020; Target Holds Steady, Costco Eases</span></div>
-        <div class="mmr-wire-impact"><span class="mmr-wire-impact-glyph">&#9650;</span><span class="mmr-wire-impact-text">Cited in Company Briefs · WMT -8% premarket</span></div>
-        <div class="mmr-wire-meta">24/7 Wall St. &middot; 9:38 AM</div>
-      </a>
-      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/micron-boise-chip-fab-expansion.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">How Micron's $50 billion Boise buildout is reshaping its hometown</span></div>
+      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/micron-boise-chip-fab-expansion.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">How Micron's $50 billion Boise buildout is reshaping its hometown</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 12:07 PM</div>
+      </a>
+      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/california-ag-bonta-paramount-wbd-lawsuit-remedies.html" target="_blank" rel="noopener" data-tag="DEV" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-tag dev">DEV</span><span class="mmr-wire-title">California AG tells CNBC that settling Paramount-WBD lawsuit would require 'robust structural remedies'</span></div>
+        <div class="mmr-wire-meta">CNBC &middot; 12:42 PM</div>
       </a>
       <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/19/call-buying-bonanza-around-trumps-hyperliquid-comments-includes-eyebrow-raising-trades.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
         <div class="mmr-wire-row"><span class="mmr-wire-title">Call-buying bonanza around Trump's Hyperliquid comments includes some eyebrow-raising trades</span></div>
@@ -440,54 +456,51 @@ button{font:inherit;color:inherit;background:none;cursor:pointer;-webkit-tap-hig
         <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">Arctos agrees to buy 10% of Atlanta Falcons at $10.6 billion valuation, sources say</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 12:02 PM</div>
       </a>
-      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/california-ag-bonta-paramount-wbd-lawsuit-remedies.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">California AG tells CNBC that settling Paramount-WBD lawsuit would require 'robust structural remedies'</span></div>
-        <div class="mmr-wire-meta">CNBC &middot; 11:32 AM</div>
-      </a>
-      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/ai-data-center-election-backlash.html" target="_blank" rel="noopener" data-tag="NEW" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-tag new">NEW</span><span class="mmr-wire-title">AI data center outrage is showing up everywhere from ads to elections</span></div>
+      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/ai-data-center-election-backlash.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">AI data center outrage is showing up everywhere from ads to elections</span></div>
         <div class="mmr-wire-meta">CNBC &middot; 11:56 AM</div>
       </a>
-      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/commercial-real-estate-demand-nar-data.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
-        <div class="mmr-wire-row"><span class="mmr-wire-title">Where commercial real estate demand is the highest, according to new data</span></div>
-        <div class="mmr-wire-meta">CNBC &middot; 10:21 AM</div>
+      <a class="mmr-wire-item" href="https://www.cnbc.com/2026/08/20/gatekeeping-bots-piles-of-slop-welcome-to-the-age-of-ai-weirdness-at-work.html" target="_blank" rel="noopener" data-tag="" data-impact="0">
+        <div class="mmr-wire-row"><span class="mmr-wire-title">Gatekeeping bots, piles of slop: Welcome to the age of AI weirdness at work</span></div>
+        <div class="mmr-wire-meta">CNBC &middot; 12:30 PM</div>
       </a>
   </div>
 </section>
 
 <section class="mmr-card" id="c3">
   <div class="mmr-section-head">MARKETS &middot; MARKETS DESK</div>
-  <h2 class="mmr-h2">Small Caps Lead a Broad Futures Pullback as Yields, Oil Climb</h2>
-  <p class="mmr-lead">Risk-off in equity futures, risk-on in crude and crypto -- a tape pulling in more than one direction at once.</p>
-  <p class="mmr-body">Equity futures are lower across the board this morning, with the Russell 2000 (RTY=F) down 1.42% to 3,002.80, the Nasdaq (NQ=F) off 0.88% to 29,351.25, the Dow (YM=F) down 0.89% to 53,079, and the S&P (ES=F) down a comparatively milder 0.53% to 7,697.50. The VIX has jumped 6.85% to 15.91, and the 10-year Treasury yield (^TNX) is up 1.01% to 4.70%, a combination that points to markets pricing in a bit more near-term unease even from still-low absolute volatility levels. Treasury Secretary Bessent said the department's buyback operation in longer-dated securities, where yields have been rising, could total more than $4 billion -- a detail worth watching against that yield move.</p>
+  <h2 class="mmr-h2">Futures Slide as Yields and Oil Climb Together</h2>
+  <p class="mmr-lead">Small caps lead a broad premarket decline while volatility, crude, and bitcoin all move higher -- not the usual single-driver story.</p>
+  <p class="mmr-body">Equity futures are pointed lower across the board this morning, with S&P 500 futures (ES=F) down 0.66% to 7,687.75, Nasdaq futures (NQ=F) off 1.04% to 29,306.00, Dow futures (YM=F) down 0.96% to 53,041, and Russell 2000 futures (RTY=F) the weakest of the group at -1.58% to 2,997.90. The VIX has jumped 5.44% to 15.70, still a low absolute level historically but a notable one-day move higher, while the 10-year Treasury yield (^TNX) is up 0.92% to 4.70% -- a rise Treasury Secretary Bessent addressed directly this morning, telling CNBC his department's buyback operation in longer-dated securities, where yields have been surging, could total more than $4 billion. Crude oil (CL=F) is up 2.13% to $86.29, gold (GC=F) is modestly higher at $4,567.40 (+0.26%), the dollar index (DX-Y.NYB) is little changed at 98.90 (+0.10%), and bitcoin (BTC-USD) stands out with a 5.00% gain to $72,763, extending a two-day, roughly 12% surge tied to a last-minute push by President Trump and crypto executives for the Clarity Act.</p>
   <div id="mmr-story-more" hidden>
-    <div class="mmr-pullquote">Small caps are bearing the brunt of today's pullback, down 1.42% against a milder 0.53% S&P futures decline.</div>
-    <p class="mmr-body">Commodities and crypto are telling a different story than equities. WTI crude (CL=F) is up 2.57% to $86.66 -- large enough to cross this report's chart threshold -- while gold (GC=F) is up a more modest 0.25% to $4,567 and the dollar index (DX-Y.NYB) is essentially flat, up 0.07% to 98.88. Bitcoin (BTC-USD) has jumped 4.51% to $72,422, part of a roughly 12% two-day surge tied to a Trump-backed push for the Clarity Act. Overseas, Asian markets are firmer -- the Nikkei 225 up 1.2% to 66,216.79 and the Hang Seng up 0.8% to 25,698.49 -- while Europe is mixed, with Germany's DAX down 0.42% and London's FTSE roughly flat at +0.04%.</p>
+    <div class="mmr-pullquote">Small caps and volatility moving together points to a broad risk-off tone rather than a single sector's problem.</div>
+    <p class="mmr-body">Overseas, the picture is more mixed than the U.S. futures tape suggests: Japan's Nikkei 225 is up 1.2% to 66,216.79 and Hong Kong's Hang Seng is up 0.8% to 25,698.49, while Germany's DAX is down 0.42% to 25,983.04 and London's FTSE is roughly flat, up just 0.04% to 10,748.16. That divergence -- Asia firm, Europe soft, U.S. futures down -- combined with rising yields, rising oil, and a rising VIX all at once, argues against pinning this morning's tone on any one catalyst; it reads more like a rates-and-oil-led repricing than a single headline-driven selloff. As always, these are premarket levels on thin volume and can shift meaningfully once the cash session opens.</p>
   </div>
   <button class="mmr-toggle" id="mmr-story-toggle">READ THE FULL STORY</button>
 </section>
 
 <section class="mmr-card" id="c4">
   <div class="mmr-section-head">FED WATCH &middot; MARKETS DESK </div>
-  <h2 class="mmr-h2">Fed Watch: Next Decision Still Weeks Away</h2>
-  <p class="mmr-lead">No FOMC meeting is scheduled today -- the next decision lands September 15-16.</p>
-  <p class="mmr-body">There's no Federal Reserve policy decision today. The next FOMC meeting is scheduled for September 15-16, and markets have roughly four weeks to digest incoming data before that decision. Nothing in this morning's news pull names a scheduled CPI, jobs, or retail-sales release for today specifically -- this morning's ^TNX move (10-year yield +1.01% to 4.70%) is showing up alongside Treasury Secretary Bessent's comments on a buyback operation in longer-dated securities, not a dated data print, so that's the more immediate rates-market story to watch into the September meeting.</p>
+  <h2 class="mmr-h2">Next Up: Interest Rate Decision on Wednesday, September 16</h2>
+  <p class="mmr-lead">No major economic release lands today -- here's the full upcoming calendar.</p>
+      <div class="mmr-cal-table">
+      <div class="mmr-cal-row">
+        <span class="mmr-cal-indicator">Interest Rate Decision (FOMC)</span>
+        <span class="mmr-cal-date">Wednesday, September 16</span>
+      </div>
+      </div>
 </section>
 
 <section class="mmr-card" id="c5">
   <div class="mmr-section-head">COMPANY BRIEFS &middot; MARKETS DESK</div>
-  <h2 class="mmr-h2">Walmart Slides on Weakest Comp Sales Since 2020 Despite Raised Guidance</h2>
-  <p class="mmr-lead">A tariff refund and a full-year outlook hike weren't enough to offset a soft same-store sales read.</p>
+  <h2 class="mmr-h2">Walmart Slips Despite Raised Guidance</h2>
+  <p class="mmr-lead">A hiked full-year outlook and a tariff refund weren't enough to offset sales concerns in Walmart's premarket reaction.</p>
   <div class="mmr-briefs">
     <div class="mmr-brief is-lead">
       <span class="mmr-brief-lede is-lead">Walmart (WMT) --</span>
-      <p class="mmr-brief-body">Walmart shares are down roughly 8% this morning after reporting its slowest same-store sales growth since 2020, even as the company raised its full-year outlook and disclosed a large tariff refund. Reporting alongside it in the same earnings window, Target reportedly held steady and Costco eased only modestly -- a split that suggests today's pressure point is specific to Walmart's own quarter rather than a broad read-through on the consumer.</p>
+      <p class="mmr-brief-body">Walmart raised its full-year outlook and disclosed a sizable tariff refund alongside its fiscal second-quarter results, but the stock fell in early trading as investors focused instead on underlying sales concerns -- a report widely read as a signal on both the health of the consumer and the broader K-shaped economy heading into the back half of the year.</p>
     </div>
-    <div class="mmr-brief mmr-brief-extra" hidden>
-      <span class="mmr-brief-lede">Bitcoin / Crypto policy --</span>
-      <p class="mmr-brief-body">Bitcoin has surged roughly 12% over two days to $72,422, its highest level since early June, as President Trump and crypto executives mount a last push for the Clarity Act. Separately, Trump's comments hinting at potential Hyperliquid regulation reportedly drew a burst of notable options call-buying, a detail still developing and worth watching for follow-through.</p>
-    </div>
-    <button class="mmr-toggle" id="mmr-briefs-toggle" data-show-label="SHOW 1 MORE BRIEF">SHOW 1 MORE BRIEF</button>
+
   </div>
   <div class="mmr-colophon">
     <div class="mmr-colophon-head">THE KECKOS MORNING EDITION</div>
