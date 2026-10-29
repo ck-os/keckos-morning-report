@@ -920,9 +920,11 @@ html.wir-open,html.wir-open body{overflow:hidden}
 
 /* The Lunch Bell (2026-10-27; banner 2026-10-29): a slim copper banner across
    the Morning tab, the bell ringing every few seconds; tap to open the card. */
-.mmr-lb-launch{display:flex;align-items:center;gap:12px;width:calc(100% + 32px);margin:0 -16px 14px;padding:11px 16px;border:0;border-top:1px solid #7A4A22;border-bottom:1px solid #4A3A34;background:linear-gradient(90deg,#B8732F 0%,#6E4224 30%,#2A1F1A 62%,#1E1B1B 100%);color:#F2ECE6;cursor:pointer;font:inherit;text-align:left;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+.mmr-lb-launch{display:flex;align-items:center;gap:12px;width:100%;margin:2px 0 14px;padding:12px 16px;border:1.5px solid #E08A3C;border-radius:6px;background:linear-gradient(135deg,rgba(224,138,60,.24),rgba(199,122,44,.10) 55%,rgba(30,27,27,.92));color:#F2ECE6;cursor:pointer;font:inherit;text-align:left;position:relative;overflow:hidden;animation:lbGlow 2.6s ease-in-out infinite}
+.mmr-lb-launch::after,.lb-banner::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,220,170,.18) 45%,transparent 60%);transform:translateX(-100%);animation:wirShine 4s ease-in-out infinite;pointer-events:none}
+@keyframes lbGlow{0%,100%{box-shadow:0 0 12px rgba(224,138,60,.22)}50%{box-shadow:0 0 0 3px rgba(224,138,60,.16),0 0 28px rgba(224,138,60,.45)}}
 .mmr-lb-launch[hidden]{display:none}
-.mmr-lb-launch:focus-visible{outline:2px solid #F2ECE6;outline-offset:-4px}
+.mmr-lb-launch:focus-visible{outline:2px solid #E08A3C;outline-offset:3px}
 .lb-bell-ic{flex:0 0 auto;font-size:28px;line-height:1;transform-origin:50% 8%;animation:lbRing 3s ease-in-out infinite}
 @keyframes lbRing{0%{transform:none}4%{transform:rotate(22deg)}9%{transform:rotate(-20deg)}14%{transform:rotate(15deg)}19%{transform:rotate(-10deg)}24%{transform:rotate(5deg)}29%,100%{transform:none}}
 .lb-launch-txt{min-width:0;flex:1}
@@ -932,7 +934,7 @@ html.wir-open,html.wir-open body{overflow:hidden}
 .lb-bar{border-bottom-color:#E08A3C;color:#E08A3C}
 /* Card header (2026-10-29): a big copper banner -- fun bold title on the left,
    the bell ringing on the right -- so the card reads instantly as The Lunch Bell. */
-.lb-banner{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:calc(16px + env(safe-area-inset-top,0px)) 54px 16px 18px;background:linear-gradient(100deg,#1E1B1B 0%,#2A1F1A 38%,#6E4224 68%,#C77A2C 100%);border-bottom:1px solid #7A4A22;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+.lb-banner{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:calc(16px + env(safe-area-inset-top,0px)) 54px 16px 18px;background:linear-gradient(135deg,rgba(224,138,60,.24),rgba(199,122,44,.10) 55%,rgba(30,27,27,.92)),#161313;border-bottom:1.5px solid #E08A3C;box-shadow:0 4px 16px rgba(0,0,0,.35);overflow:hidden}
 .lb-banner-txt{flex:1;min-width:0}
 .lb-banner-k{display:block;font:700 10px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#E08A3C}
 .lb-banner-t{display:block;margin-top:2px;font:italic 700 31px/1.05 'Playfair Display',Georgia,serif;color:#F2ECE6;letter-spacing:0}
@@ -968,6 +970,28 @@ html.wir-open,html.wir-open body{overflow:hidden}
 @keyframes lbSwap{to{opacity:0}}
 @keyframes lbShow{to{opacity:1}}
 .lb-ov-l{transition:opacity .25s}
+.lb-zs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 0 8px}
+.lb-zs::-webkit-scrollbar{display:none}
+.lb-z{flex:0 0 auto;min-height:32px;padding:5px 11px;border:1px solid #4A3A34;border-radius:16px;background:#171414;color:#AD988D;font:400 11.5px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;cursor:pointer}
+.lb-z.on{border-color:#E08A3C;color:#F2ECE6;background:rgba(224,138,60,.16)}
+.lb-z:focus-visible,.lb-play:focus-visible{outline:2px solid #DCB24E;outline-offset:2px}
+.lb-cap{display:flex;justify-content:space-between;align-items:baseline;padding:0 2px 2px;font:400 10.5px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;color:#8A7A70;letter-spacing:.04em}
+.lb-cap-t{font:700 15px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;color:#E08A3C}
+.lb-ov-svg{touch-action:pan-y;cursor:crosshair}
+.lb-pl{fill:none;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round;transition:opacity .2s}
+.lb-pl.w{stroke-width:2.8}
+.lb-pl.on{stroke-width:3.2}
+.lb-ov-svg .dim{opacity:.13}
+.lb-ov-cur{stroke:#E08A3C;stroke-width:1;stroke-dasharray:2 2}
+.lb-lead{stroke-width:.7;opacity:.55}
+.lb-tip{font:600 9.5px Georgia,serif;cursor:pointer}
+.lb-tip.on{font-weight:700}
+.lb-tip-v{font:400 9px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;fill:#E6DAD2}
+.lb-ctl{display:flex;align-items:center;gap:10px;margin-top:4px}
+.lb-play{flex:0 0 auto;width:40px;height:40px;border:1.5px solid #E08A3C;border-radius:50%;background:rgba(224,138,60,.16);color:#F2ECE6;font:400 14px/1 Georgia,serif;cursor:pointer}
+.lb-scrub{flex:1;min-width:0;accent-color:#E08A3C;height:32px}
+.lb-lg.dim{opacity:.5}
+.lb-lg b.up{color:#7FB08A}.lb-lg b.dn{color:#CC7A63}
 .lb-ov.has-hl .lb-ov-l:not(.on){opacity:.12}
 .lb-ov.has-hl .lb-ov-l.on path{stroke-width:3}
 .lb-lgs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 10px;margin-top:8px}
@@ -998,7 +1022,7 @@ html.wir-open,html.wir-open body{overflow:hidden}
 .lb-mv{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px;align-items:baseline;padding:6px 0;border-bottom:1px solid #2E2624;font:400 12px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace}
 .lb-mv b{color:#F2ECE6}
 .lb-mv-n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#8A7A70;font-size:10.5px;font-style:normal}
-@media (prefers-reduced-motion:reduce){.lb-open .lb-ov-p{animation:none;opacity:0}.lb-open .lb-ov-final{animation:none;opacity:1}.lb-open .lb-ov-dot,.lb-open .lb-tl-line,.lb-open .lb-tl-dot,.lb-banner-bell,.lb-bell-ic,.lb-open .lb-line,.lb-open .lb-dot,.lb-open .lb-sec-track i{animation:none}}
+@media (prefers-reduced-motion:reduce){.mmr-lb-launch,.mmr-lb-launch::after,.lb-banner::after{animation:none}.lb-open .lb-ov-p{animation:none;opacity:0}.lb-open .lb-ov-final{animation:none;opacity:1}.lb-open .lb-ov-dot,.lb-open .lb-tl-line,.lb-open .lb-tl-dot,.lb-banner-bell,.lb-bell-ic,.lb-open .lb-line,.lb-open .lb-dot,.lb-open .lb-sec-track i{animation:none}}
 </style>
 </head>
 <body>
@@ -3154,8 +3178,8 @@ html.wir-open,html.wir-open body{overflow:hidden}
     var v = {}; parts.forEach(function(p){ v[p.type] = p.value; });
     return { date: v.year + '-' + v.month + '-' + v.day, mins: (parseInt(v.hour, 10) % 24) * 60 + parseInt(v.minute, 10) };
   }
-  function open(){ o.classList.add('is-open', 'lb-open'); o.setAttribute('aria-hidden', 'false'); document.documentElement.classList.add('wir-open'); o.scrollTop = 0; if (c) c.focus(); }
-  function close(){ o.classList.remove('is-open', 'lb-open'); o.setAttribute('aria-hidden', 'true'); if (!document.querySelector('.mmr-wir-overlay.is-open')) document.documentElement.classList.remove('wir-open'); b.focus(); }
+  function open(){ o.classList.add('is-open', 'lb-open'); o.setAttribute('aria-hidden', 'false'); document.documentElement.classList.add('wir-open'); o.scrollTop = 0; if (c) c.focus(); setTimeout(function(){ lbPlayers.forEach(function(p){ p.replay(); }); }, 450); }
+  function close(){ lbPlayers.forEach(function(p){ p.stop(); }); o.classList.remove('is-open', 'lb-open'); o.setAttribute('aria-hidden', 'true'); if (!document.querySelector('.mmr-wir-overlay.is-open')) document.documentElement.classList.remove('wir-open'); b.focus(); }
   b.addEventListener('click', open);
   if (c) c.addEventListener('click', close);
   o.addEventListener('click', function(e){ if (e.target === o) close(); });
@@ -3164,7 +3188,7 @@ html.wir-open,html.wir-open body{overflow:hidden}
     var btn = e.target.closest ? e.target.closest('.lb-lg') : null;
     if (!btn) return;
     var wrap = btn.closest('.lb-ov'), k = btn.getAttribute('data-k');
-    if (!wrap) return;
+    if (!wrap || wrap.classList.contains('is-live')) return;
     var hl = wrap.getAttribute('data-hl') === k ? null : k;
     if (hl) wrap.setAttribute('data-hl', hl); else wrap.removeAttribute('data-hl');
     wrap.classList.toggle('has-hl', !!hl);
@@ -3175,6 +3199,103 @@ html.wir-open,html.wir-open body{overflow:hidden}
       else if (on) el.parentNode.appendChild(el);
     });
   });
+  // "Through the day" player (2026-10-29): play / scrub / zoom to an hour, with
+  // each line's name riding its tip. Data comes from the card's data-ov.
+  function lbFmt(m){ var h = Math.floor(m / 60), mm = m % 60; return (h > 12 ? h - 12 : h) + ':' + (mm < 10 ? '0' : '') + mm; }
+  function lbOv(wrap){
+    var D; try { D = JSON.parse(wrap.getAttribute('data-ov')); } catch (e) { return null; }
+    var S = (D && D.s) || []; if (!S.length) return null;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var t0 = 570, tEnd = 0;
+    S.forEach(function(s){ tEnd = Math.max(tEnd, s.p[s.p.length - 1][0]); });
+    var wins = [{ l: 'All day', a: t0, b: tEnd }];
+    for (var a = t0; a < tEnd; a += 60) { var bb = Math.min(a + 60, tEnd); if (bb - a >= 15) wins.push({ l: lbFmt(a) + '–' + lbFmt(bb), a: a, b: bb }); }
+    var st = { w: 0, t: tEnd, hl: null, raf: 0 };
+    var W = 340, H = 236, L = 30, PR = 234, T = 10, B = 22;
+    wrap.classList.add('is-live');
+    wrap.innerHTML = '<div class="lb-zs" role="group" aria-label="Zoom">' + wins.map(function(w, i){ return '<button type="button" class="lb-z" data-w="' + i + '">' + w.l + '</button>'; }).join('') + '</div>'
+      + '<div class="lb-cap"><span class="lb-cap-m"></span><b class="lb-cap-t"></b></div>'
+      + '<svg viewBox="0 0 ' + W + ' ' + H + '" class="lb-ov-svg" role="img"></svg>'
+      + '<div class="lb-ctl"><button type="button" class="lb-play" aria-label="Play">▶</button><input type="range" class="lb-scrub" step="1" aria-label="Time of day"></div>'
+      + '<div class="lb-lgs"></div>';
+    var svg = wrap.querySelector('svg'), cap = wrap.querySelector('.lb-cap-m'), capT = wrap.querySelector('.lb-cap-t'),
+        scrub = wrap.querySelector('.lb-scrub'), playB = wrap.querySelector('.lb-play'), lgs = wrap.querySelector('.lb-lgs');
+    function at(s, m){ var p = s.p, v = null; for (var i = 0; i < p.length && p[i][0] <= m; i++) v = p[i][1]; return v === null ? p[0][1] : v; }
+    function render(){
+      var w = wins[st.w], t = Math.max(w.a, Math.min(st.t, w.b)), zoom = st.w > 0;
+      var base = {}; S.forEach(function(s){ base[s.k] = zoom ? at(s, w.a) : 0; });
+      var lo = 0, hi = 0;
+      S.forEach(function(s){ s.p.forEach(function(q){ if (q[0] >= w.a && q[0] <= w.b) { var v = q[1] - base[s.k]; if (v < lo) lo = v; if (v > hi) hi = v; } }); });
+      var span = hi - lo || 0.2, step = [0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10].filter(function(x){ return span / x <= 5; })[0] || 10;
+      lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step; if (hi - lo < step) hi = lo + step;
+      var X = function(m){ return L + (m - w.a) / Math.max(1, w.b - w.a) * (PR - L); };
+      var Y = function(v){ return T + (hi - v) / (hi - lo) * (H - T - B); };
+      var dp = step < 0.1 ? 2 : step < 1 ? (step === 0.25 ? 2 : 1) : 0, o = '';
+      for (var g = lo; g <= hi + 1e-9; g += step) {
+        var z = Math.abs(g) < 1e-9, lab = z ? '0%' : (g > 0 ? '+' : '') + g.toFixed(dp) + '%';
+        o += '<line x1="' + L + '" x2="' + PR + '" y1="' + Y(g).toFixed(1) + '" y2="' + Y(g).toFixed(1) + '" class="' + (z ? 'lb-ov-zero' : 'lb-ov-grid') + '"/><text x="' + (L - 4) + '" y="' + (Y(g) + 3.5).toFixed(1) + '" text-anchor="end" class="lb-ov-ax">' + lab + '</text>';
+      }
+      var tick = zoom ? 15 : 60;
+      for (var m = Math.ceil(w.a / tick) * tick; m <= w.b; m += tick) {
+        if (m === w.a && !zoom) continue;
+        o += '<text x="' + X(m).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle" class="lb-ov-ax">' + lbFmt(m) + '</text>';
+      }
+      if (!zoom) o += '<text x="' + L + '" y="' + (H - 6) + '" text-anchor="start" class="lb-ov-ax">9:30</text>';
+      if (t < w.b) o += '<line x1="' + X(t).toFixed(1) + '" x2="' + X(t).toFixed(1) + '" y1="' + T + '" y2="' + (H - B) + '" class="lb-ov-cur"/>';
+      var tips = [], order = S.slice().sort(function(a, b){ return (a.w ? 1 : 0) - (b.w ? 1 : 0) || (a.k === st.hl ? 1 : 0) - (b.k === st.hl ? 1 : 0); });
+      order.forEach(function(s){
+        var d = '', last = null;
+        s.p.forEach(function(q){ if (q[0] >= w.a && q[0] <= t) { last = q[1] - base[s.k]; d += (d ? 'L' : 'M') + X(q[0]).toFixed(1) + ',' + Y(last).toFixed(1); } });
+        if (last === null) return;
+        var dim = st.hl && st.hl !== s.k ? ' dim' : '', on = st.hl === s.k ? ' on' : '';
+        o += '<path d="' + d + '" stroke="' + s.c + '" class="lb-pl' + (s.w ? ' w' : '') + dim + on + '"' + (s.d ? ' stroke-dasharray="5 3"' : '') + '/>';
+        o += '<circle cx="' + X(Math.min(t, s.p[s.p.length - 1][0])).toFixed(1) + '" cy="' + Y(last).toFixed(1) + '" r="2.6" fill="' + s.c + '" class="' + dim + '"/>';
+        tips.push({ s: s, v: last, y: Y(last), x: X(Math.min(t, s.p[s.p.length - 1][0])), dim: dim, on: on });
+      });
+      // spread the names so they never overlap, keeping each near its line
+      tips.sort(function(a, b){ return a.y - b.y; });
+      var gap = 11.5, top = T + 4, bot = H - B;
+      tips.forEach(function(p, i){ p.ly = Math.max(p.y, i ? tips[i - 1].ly + gap : top); });
+      for (var i = tips.length - 1; i >= 0; i--) { var lim = i === tips.length - 1 ? bot : tips[i + 1].ly - gap; if (tips[i].ly > lim) tips[i].ly = lim; }
+      tips.forEach(function(p){
+        var lx = PR + 8;
+        o += '<line x1="' + p.x.toFixed(1) + '" y1="' + p.y.toFixed(1) + '" x2="' + (lx - 2) + '" y2="' + p.ly.toFixed(1) + '" stroke="' + p.s.c + '" class="lb-lead' + p.dim + '"/>';
+        o += '<text x="' + lx + '" y="' + (p.ly + 3.5).toFixed(1) + '" class="lb-tip' + p.dim + p.on + '" data-k="' + p.s.k + '" fill="' + p.s.c + '">' + p.s.n.replace('&', '&amp;') + ' <tspan class="lb-tip-v">' + (p.v >= 0 ? '+' : '') + p.v.toFixed(zoom ? 2 : 1) + '%</tspan></text>';
+      });
+      svg.innerHTML = o;
+      svg.setAttribute('aria-label', 'Every part of the market, ' + (zoom ? 'change since ' + lbFmt(w.a) : 'change from yesterday’s close') + ', at ' + lbFmt(t));
+      cap.textContent = zoom ? 'Change since ' + lbFmt(w.a) : 'Change from yesterday’s close';
+      capT.textContent = lbFmt(t) + (t < 720 ? ' am' : ' pm');
+      scrub.min = w.a; scrub.max = w.b; scrub.value = t;
+      Array.prototype.forEach.call(wrap.querySelectorAll('.lb-z'), function(b){ var on = +b.getAttribute('data-w') === st.w; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+      lgs.innerHTML = S.map(function(s){
+        var v = at(s, t) - base[s.k], cls = 'lb-lg' + (st.hl === s.k ? ' on' : '') + (st.hl && st.hl !== s.k ? ' dim' : '');
+        return '<button type="button" class="' + cls + '" data-k="' + s.k + '" aria-pressed="' + (st.hl === s.k) + '"><i style="border-top:2px ' + (s.d ? 'dashed' : 'solid') + ' ' + s.c + '"></i><span>' + s.n.replace('&', '&amp;') + '</span><b class="' + (v >= 0 ? 'up' : 'dn') + '">' + (v >= 0 ? '+' : '') + v.toFixed(zoom ? 2 : 1) + '%</b></button>';
+      }).join('');
+    }
+    function stop(){ if (st.raf) cancelAnimationFrame(st.raf); st.raf = 0; playB.textContent = '▶'; playB.setAttribute('aria-label', 'Play'); }
+    function play(){
+      stop(); var w = wins[st.w];
+      if (reduce) { st.t = w.b; render(); return; }
+      var dur = st.w ? 4500 : 7000, start = null;
+      playB.textContent = '❚❚'; playB.setAttribute('aria-label', 'Pause');
+      (function f(ts){ if (start === null) start = ts; var k = Math.min(1, (ts - start) / dur); st.t = Math.round(w.a + (w.b - w.a) * k); render(); st.raf = k < 1 ? requestAnimationFrame(f) : 0; if (k >= 1) stop(); })(performance.now());
+    }
+    playB.addEventListener('click', function(){ if (st.raf) stop(); else { if (st.t >= wins[st.w].b) st.t = wins[st.w].a; play(); } });
+    scrub.addEventListener('input', function(){ stop(); st.t = +scrub.value; render(); });
+    wrap.addEventListener('click', function(e){
+      var z = e.target.closest('.lb-z'); if (z) { stop(); st.w = +z.getAttribute('data-w'); st.t = wins[st.w].a; play(); return; }
+      var k = e.target.closest('[data-k]'); if (k && wrap.contains(k)) { var key = k.getAttribute('data-k'); st.hl = st.hl === key ? null : key; render(); }
+    });
+    function fromX(e){ var r = svg.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W, w = wins[st.w];
+      if (x < L - 6 || x > PR + 4) return; stop(); st.t = Math.round(w.a + Math.max(0, Math.min(1, (x - L) / (PR - L))) * (w.b - w.a)); render(); }
+    svg.addEventListener('pointerdown', function(e){ if (!e.target.closest('[data-k]')) fromX(e); });
+    svg.addEventListener('pointermove', function(e){ if (e.buttons || e.pointerType === 'touch') fromX(e); });
+    render();
+    return { replay: function(){ st.w = 0; st.t = t0; play(); }, stop: stop };
+  }
+  var lbPlayers = [];
+  function lbInit(){ lbPlayers = []; Array.prototype.forEach.call(body.querySelectorAll('.lb-ov[data-ov]'), function(w){ var p = lbOv(w); if (p) lbPlayers.push(p); }); }
   function check(){
     var t = etNow();
     if (t.mins < 12 * 60) return;
@@ -3184,6 +3305,7 @@ html.wir-open,html.wir-open body{overflow:hidden}
         if (!d || d.date !== t.date || !d.html) return;
         if (loaded !== d.generated_at) {
           body.innerHTML = d.html;
+          lbInit();
           document.getElementById('mmr-lb-head').textContent = d.headline || '';
           document.getElementById('mmr-lb-time').textContent = d.time_et || 'Noon';
           b.hidden = false; loaded = d.generated_at;
