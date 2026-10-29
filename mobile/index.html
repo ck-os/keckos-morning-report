@@ -932,11 +932,11 @@ html.wir-open,html.wir-open body{overflow:hidden}
 .lb-bar{border-bottom-color:#E08A3C;color:#E08A3C}
 /* Card header (2026-10-29): a big copper banner -- fun bold title on the left,
    the bell ringing on the right -- so the card reads instantly as The Lunch Bell. */
-.lb-banner{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:calc(18px + env(safe-area-inset-top,0px)) 54px 18px 18px;background:linear-gradient(115deg,#C77A2C,#E08A3C 50%,#F2A55C 80%,#E08A3C);border-bottom:2px solid #8A4E1C;box-shadow:0 6px 22px rgba(0,0,0,.45)}
+.lb-banner{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:calc(16px + env(safe-area-inset-top,0px)) 54px 16px 18px;background:linear-gradient(115deg,#B8732F,#D4853E 55%,#DE9654 85%,#D4853E);border-bottom:1px solid #8A4E1C;box-shadow:0 4px 16px rgba(0,0,0,.35)}
 .lb-banner-txt{flex:1;min-width:0}
 .lb-banner-k{display:block;font:700 10px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#3A2410}
-.lb-banner-t{display:block;margin-top:2px;font:italic 900 36px/1.02 'Playfair Display',Georgia,serif;color:#1A1210;letter-spacing:-.01em;text-shadow:0 2px 0 rgba(255,220,170,.35)}
-.lb-banner-bell{flex:0 0 auto;font-size:48px;line-height:1;transform-origin:50% 8%;animation:lbRing 3s ease-in-out infinite;filter:drop-shadow(0 3px 4px rgba(0,0,0,.35))}
+.lb-banner-t{display:block;margin-top:2px;font:italic 700 31px/1.05 'Playfair Display',Georgia,serif;color:#1F1510;letter-spacing:0}
+.lb-banner-bell{flex:0 0 auto;font-size:42px;line-height:1;transform-origin:50% 8%;animation:lbRing 3s ease-in-out infinite;filter:drop-shadow(0 3px 4px rgba(0,0,0,.35))}
 .lb-close{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));right:10px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(26,18,16,.25);color:#1A1210;font:400 26px/1 Georgia,serif;cursor:pointer}
 .lb-close:focus-visible{outline:2px solid #1A1210;outline-offset:2px}
 .mmr-lb .mmr-wir-kicker,.mmr-lb .mmr-wir-sub{color:#E08A3C}
@@ -953,6 +953,17 @@ html.wir-open,html.wir-open body{overflow:hidden}
 .lb-sec{display:grid;grid-template-columns:118px minmax(0,1fr) 58px;gap:8px;align-items:center;padding:3px 0;font:400 13px Georgia,serif;color:#E6DAD2}
 .lb-sec b{text-align:right;font:400 12px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace}
 .lb-bk{grid-template-columns:104px minmax(0,1fr) 50px 64px}
+@keyframes wirFade{from{opacity:0}to{opacity:1}}
+.lb-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:4px}
+.lb-tile{padding:8px 9px 6px;background:#1E1B1B;border:1px solid #4A3A34;border-radius:4px}
+.lb-tile-h{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font:400 12.5px Georgia,serif;color:#E6DAD2}
+.lb-tile-h b{font:700 12px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace}
+.lb-tile svg{display:block;width:100%;height:46px;margin-top:5px;overflow:visible}
+.lb-tl-zero{stroke:#5A4A42;stroke-width:1;stroke-dasharray:2 3;vector-effect:non-scaling-stroke}
+.lb-tl-line{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.lb-open .lb-tl-line{stroke-dasharray:100;animation:wirDraw 1.8s ease-out both;animation-delay:calc(.2s + var(--d))}
+.lb-open .lb-tl-dot{animation:wirFade .3s both;animation-delay:calc(1.9s + var(--d))}
+.lb-tile-t{display:flex;justify-content:space-between;margin-top:2px;font:400 9.5px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;color:#8A7A70}
 .lb-bk em{font:400 10.5px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace;font-style:normal;color:#8A7A70;text-align:right;white-space:nowrap}
 .lb-sec-track{position:relative;height:10px;border-radius:5px;background:rgba(220,178,78,.08)}
 .lb-sec-track::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#5A4A42}
@@ -963,7 +974,7 @@ html.wir-open,html.wir-open body{overflow:hidden}
 .lb-mv{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px;align-items:baseline;padding:6px 0;border-bottom:1px solid #2E2624;font:400 12px 'Cascadia Code','SF Mono',Consolas,'Roboto Mono',monospace}
 .lb-mv b{color:#F2ECE6}
 .lb-mv-n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#8A7A70;font-size:10.5px;font-style:normal}
-@media (prefers-reduced-motion:reduce){.lb-banner-bell,.lb-bell-ic,.lb-open .lb-line,.lb-open .lb-dot,.lb-open .lb-sec-track i{animation:none}}
+@media (prefers-reduced-motion:reduce){.lb-open .lb-tl-line,.lb-open .lb-tl-dot,.lb-banner-bell,.lb-bell-ic,.lb-open .lb-line,.lb-open .lb-dot,.lb-open .lb-sec-track i{animation:none}}
 </style>
 </head>
 <body>
