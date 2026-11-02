@@ -3247,8 +3247,12 @@ html.wir-open,html.wir-open body{overflow:hidden}
     S.forEach(function(s){ tEnd = Math.max(tEnd, s.p[s.p.length - 1][0]); });
     var wins = [{ l: 'All day', a: t0, b: tEnd }];
     for (var a = t0; a < tEnd; a += 60) { var bb = Math.min(a + 60, tEnd); if (bb - a >= 15) wins.push({ l: lbFmt(a) + '–' + lbFmt(bb), a: a, b: bb }); }
-    var st = { w: 0, t: tEnd, hl: null, raf: 0 };
-    var W = 340, H = 236, L = 30, PR = 234, T = 10, B = 22;
+    // st.view / st.yr drive the opening "follow-cam" tour (2026-11-02, user: "zoom in a bit on
+    // the initial run so it slowly goes through the day... to see how all the parts are moving in
+    // a little more detail"): a ~75-minute window pans with the clock and the vertical scale eases
+    // to fit what's on screen, then the chart pulls back out to the full day.
+    var st = { w: 0, t: tEnd, hl: null, raf: 0, view: null, yr: null, tour: false };
+    var W = 340, H = 236, L = 30, PR = 234, T = 10, B = 22, clipId = 'lbclip' + Math.random().toString(36).slice(2, 8);
     wrap.classList.add('is-live');
     wrap.innerHTML = '<div class="lb-zs" role="group" aria-label="Zoom">' + wins.map(function(w, i){ return '<button type="button" class="lb-z" data-w="' + i + '">' + w.l + '</button>'; }).join('') + '</div>'
       + '<div class="lb-cap"><span class="lb-cap-m"></span><b class="lb-cap-t"></b></div>'
@@ -3258,37 +3262,51 @@ html.wir-open,html.wir-open body{overflow:hidden}
     var svg = wrap.querySelector('svg'), cap = wrap.querySelector('.lb-cap-m'), capT = wrap.querySelector('.lb-cap-t'),
         scrub = wrap.querySelector('.lb-scrub'), playB = wrap.querySelector('.lb-play'), lgs = wrap.querySelector('.lb-lgs');
     function at(s, m){ var p = s.p, v = null; for (var i = 0; i < p.length && p[i][0] <= m; i++) v = p[i][1]; return v === null ? p[0][1] : v; }
+    function range(a, b, base, withZero, list){
+      var lo = withZero ? 0 : Infinity, hi = withZero ? 0 : -Infinity;
+      (list || S).forEach(function(s){ s.p.forEach(function(q){ if (q[0] >= a && q[0] <= b) { var v = q[1] - base[s.k]; if (v < lo) lo = v; if (v > hi) hi = v; } }); });
+      if (!isFinite(lo)) { lo = -0.1; hi = 0.1; }
+      return { lo: lo, hi: hi };
+    }
     function render(){
-      var w = wins[st.w], t = Math.max(w.a, Math.min(st.t, w.b)), zoom = st.w > 0;
-      var base = {}; S.forEach(function(s){ base[s.k] = zoom ? at(s, w.a) : 0; });
-      var lo = 0, hi = 0;
-      S.forEach(function(s){ s.p.forEach(function(q){ if (q[0] >= w.a && q[0] <= w.b) { var v = q[1] - base[s.k]; if (v < lo) lo = v; if (v > hi) hi = v; } }); });
-      var span = hi - lo || 0.2, step = [0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10].filter(function(x){ return span / x <= 5; })[0] || 10;
-      lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step; if (hi - lo < step) hi = lo + step;
+      var full = wins[st.w], w = st.view || full, t = Math.max(w.a, Math.min(st.t, w.b)), zoom = !st.view && st.w > 0;
+      var base = {}; S.forEach(function(s){ base[s.k] = zoom ? at(s, full.a) : 0; });
+      var lo, hi, step;
+      if (st.yr) {
+        lo = st.yr.lo; hi = st.yr.hi;
+        step = [0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10].filter(function(x){ return (hi - lo) / x <= 5; })[0] || 10;
+      } else {
+        var r = range(w.a, w.b, base, true); lo = r.lo; hi = r.hi;
+        var span = hi - lo || 0.2; step = [0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10].filter(function(x){ return span / x <= 5; })[0] || 10;
+        lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step; if (hi - lo < step) hi = lo + step;
+      }
       var X = function(m){ return L + (m - w.a) / Math.max(1, w.b - w.a) * (PR - L); };
       var Y = function(v){ return T + (hi - v) / (hi - lo) * (H - T - B); };
-      var dp = step < 0.1 ? 2 : step < 1 ? (step === 0.25 ? 2 : 1) : 0, o = '';
-      for (var g = lo; g <= hi + 1e-9; g += step) {
+      var dp = step < 0.1 ? 2 : step < 1 ? (step === 0.25 ? 2 : 1) : 0, o = '<defs><clipPath id="' + clipId + '"><rect x="' + L + '" y="' + T + '" width="' + (PR - L + 3) + '" height="' + (H - T - B) + '"/></clipPath></defs>';
+      for (var g = Math.ceil(lo / step - 1e-9) * step; g <= hi + 1e-9; g += step) {
         var z = Math.abs(g) < 1e-9, lab = z ? '0%' : (g > 0 ? '+' : '') + g.toFixed(dp) + '%';
         o += '<line x1="' + L + '" x2="' + PR + '" y1="' + Y(g).toFixed(1) + '" y2="' + Y(g).toFixed(1) + '" class="' + (z ? 'lb-ov-zero' : 'lb-ov-grid') + '"/><text x="' + (L - 4) + '" y="' + (Y(g) + 3.5).toFixed(1) + '" text-anchor="end" class="lb-ov-ax">' + lab + '</text>';
       }
-      var tick = zoom ? 15 : 60;
+      var tick = (w.b - w.a) <= 120 ? 15 : 60, fullDay = !st.view && !zoom;
       for (var m = Math.ceil(w.a / tick) * tick; m <= w.b; m += tick) {
-        if (m === w.a && !zoom) continue;
+        if (m === w.a && fullDay) continue;
         o += '<text x="' + X(m).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle" class="lb-ov-ax">' + lbFmt(m) + '</text>';
       }
-      if (!zoom) o += '<text x="' + L + '" y="' + (H - 6) + '" text-anchor="start" class="lb-ov-ax">9:30</text>';
+      if (fullDay && X(Math.ceil((w.a + 1) / 60) * 60) - L > 34) o += '<text x="' + L + '" y="' + (H - 6) + '" text-anchor="start" class="lb-ov-ax">9:30</text>';
       if (t < w.b) o += '<line x1="' + X(t).toFixed(1) + '" x2="' + X(t).toFixed(1) + '" y1="' + T + '" y2="' + (H - B) + '" class="lb-ov-cur"/>';
       var tips = [], order = S.slice().sort(function(a, b){ return (a.w ? 1 : 0) - (b.w ? 1 : 0) || (a.k === st.hl ? 1 : 0) - (b.k === st.hl ? 1 : 0); });
+      o += '<g clip-path="url(#' + clipId + ')">';
       order.forEach(function(s){
         var d = '', last = null;
         s.p.forEach(function(q){ if (q[0] >= w.a && q[0] <= t) { last = q[1] - base[s.k]; d += (d ? 'L' : 'M') + X(q[0]).toFixed(1) + ',' + Y(last).toFixed(1); } });
         if (last === null) return;
         var dim = st.hl && st.hl !== s.k ? ' dim' : '', on = st.hl === s.k ? ' on' : '';
+        var cx = X(Math.min(t, s.p[s.p.length - 1][0])), cy = Math.max(T, Math.min(H - B, Y(last)));
         o += '<path d="' + d + '" stroke="' + s.c + '" class="lb-pl' + (s.w ? ' w' : '') + dim + on + '"' + (s.d ? ' stroke-dasharray="5 3"' : '') + '/>';
-        o += '<circle cx="' + X(Math.min(t, s.p[s.p.length - 1][0])).toFixed(1) + '" cy="' + Y(last).toFixed(1) + '" r="2.6" fill="' + s.c + '" class="' + dim + '"/>';
-        tips.push({ s: s, v: last, y: Y(last), x: X(Math.min(t, s.p[s.p.length - 1][0])), dim: dim, on: on });
+        o += '<circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="2.6" fill="' + s.c + '" class="' + dim + '"/>';
+        tips.push({ s: s, v: last, y: cy, x: cx, dim: dim, on: on });
       });
+      o += '</g>';
       // spread the names so they never overlap, keeping each near its line
       tips.sort(function(a, b){ return a.y - b.y; });
       var gap = 11.5, top = T + 4, bot = H - B;
@@ -3297,20 +3315,25 @@ html.wir-open,html.wir-open body{overflow:hidden}
       tips.forEach(function(p){
         var lx = PR + 8;
         o += '<line x1="' + p.x.toFixed(1) + '" y1="' + p.y.toFixed(1) + '" x2="' + (lx - 2) + '" y2="' + p.ly.toFixed(1) + '" stroke="' + p.s.c + '" class="lb-lead' + p.dim + '"/>';
-        o += '<text x="' + lx + '" y="' + (p.ly + 3.5).toFixed(1) + '" class="lb-tip' + p.dim + p.on + '" data-k="' + p.s.k + '" fill="' + p.s.c + '">' + p.s.n.replace('&', '&amp;') + ' <tspan class="lb-tip-v">' + (p.v >= 0 ? '+' : '') + p.v.toFixed(zoom ? 2 : 1) + '%</tspan></text>';
+        o += '<text x="' + lx + '" y="' + (p.ly + 3.5).toFixed(1) + '" class="lb-tip' + p.dim + p.on + '" data-k="' + p.s.k + '" fill="' + p.s.c + '">' + p.s.n.replace('&', '&amp;') + ' <tspan class="lb-tip-v">' + (p.v >= 0 ? '+' : '') + p.v.toFixed(zoom || st.view ? 2 : 1) + '%</tspan></text>';
       });
       svg.innerHTML = o;
-      svg.setAttribute('aria-label', 'Every part of the market, ' + (zoom ? 'change since ' + lbFmt(w.a) : 'change from yesterday’s close') + ', at ' + lbFmt(t));
-      cap.textContent = zoom ? 'Change since ' + lbFmt(w.a) : 'Change from yesterday’s close';
+      svg.setAttribute('aria-label', 'Every part of the market, ' + (zoom ? 'change since ' + lbFmt(full.a) : 'change from yesterday’s close') + ', at ' + lbFmt(t));
+      cap.textContent = st.tour ? 'Following the day, zoomed in' : zoom ? 'Change since ' + lbFmt(full.a) : 'Change from yesterday’s close';
       capT.textContent = lbFmt(t) + (t < 720 ? ' am' : ' pm');
-      scrub.min = w.a; scrub.max = w.b; scrub.value = t;
+      scrub.min = full.a; scrub.max = full.b; scrub.value = Math.max(full.a, Math.min(st.t, full.b));
       Array.prototype.forEach.call(wrap.querySelectorAll('.lb-z'), function(b){ var on = +b.getAttribute('data-w') === st.w; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
       lgs.innerHTML = S.map(function(s){
         var v = at(s, t) - base[s.k], cls = 'lb-lg' + (st.hl === s.k ? ' on' : '') + (st.hl && st.hl !== s.k ? ' dim' : '');
         return '<button type="button" class="' + cls + '" data-k="' + s.k + '" aria-pressed="' + (st.hl === s.k) + '"><i style="border-top:2px ' + (s.d ? 'dashed' : 'solid') + ' ' + s.c + '"></i><span>' + s.n.replace('&', '&amp;') + '</span><b class="' + (v >= 0 ? 'up' : 'dn') + '">' + (v >= 0 ? '+' : '') + v.toFixed(zoom ? 2 : 1) + '%</b></button>';
       }).join('');
     }
-    function stop(){ if (st.raf) cancelAnimationFrame(st.raf); st.raf = 0; playB.textContent = '▶'; playB.setAttribute('aria-label', 'Play'); }
+    function stop(){
+      if (st.raf) cancelAnimationFrame(st.raf); st.raf = 0;
+      var wasTour = st.tour; st.tour = false; st.view = null; st.yr = null;
+      playB.textContent = '▶'; playB.setAttribute('aria-label', 'Play');
+      if (wasTour) render();
+    }
     function play(){
       stop(); var w = wins[st.w];
       if (reduce) { st.t = w.b; render(); return; }
@@ -3318,10 +3341,37 @@ html.wir-open,html.wir-open body{overflow:hidden}
       playB.textContent = '❚❚'; playB.setAttribute('aria-label', 'Pause');
       (function f(ts){ if (start === null) start = ts; var k = Math.min(1, (ts - start) / dur); st.t = Math.round(w.a + (w.b - w.a) * k); render(); st.raf = k < 1 ? requestAnimationFrame(f) : 0; if (k >= 1) stop(); })(performance.now());
     }
-    playB.addEventListener('click', function(){ if (st.raf) stop(); else { if (st.t >= wins[st.w].b) st.t = wins[st.w].a; play(); } });
+    function tour(){
+      stop(); st.w = 0;
+      if (reduce || tEnd - t0 < 90) { st.t = tEnd; render(); return; }
+      var VS = 75, span = tEnd - t0, dur = Math.min(22000, Math.max(12000, span * 70)), out = 1400, start = null, zero = {}, from = null;
+      S.forEach(function(s){ zero[s.k] = 0; });
+      var full = range(t0, tEnd, zero, true), fstep = [0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10].filter(function(x){ return (full.hi - full.lo) / x <= 5; })[0] || 10;
+      full = { lo: Math.floor(full.lo / fstep) * fstep, hi: Math.ceil(full.hi / fstep) * fstep };
+      st.tour = true;
+      playB.textContent = '❚❚'; playB.setAttribute('aria-label', 'Pause');
+      (function f(ts){
+        if (start === null) start = ts;
+        var e = ts - start;
+        if (e < dur) {
+          var k = e / dur; st.t = Math.round(t0 + span * k);
+          var a = Math.max(t0, Math.min(tEnd - VS, st.t - VS * 0.8));
+          st.view = { a: a, b: a + VS };
+          var r = range(a, st.t, zero, false, S.filter(function(s){ return !s.d || s.k === st.hl; })), pad = Math.max(0.12, (r.hi - r.lo) * 0.14), tg = { lo: r.lo - pad, hi: r.hi + pad };
+          st.yr = st.yr ? { lo: st.yr.lo + (tg.lo - st.yr.lo) * 0.07, hi: st.yr.hi + (tg.hi - st.yr.hi) * 0.07 } : tg;
+          from = { a: st.view.a, b: st.view.b, lo: st.yr.lo, hi: st.yr.hi };
+        } else if (e < dur + out) {
+          var u = (e - dur) / out; u = u * u * (3 - 2 * u); st.t = tEnd;
+          st.view = { a: from.a + (t0 - from.a) * u, b: from.b + (tEnd - from.b) * u };
+          st.yr = { lo: from.lo + (full.lo - from.lo) * u, hi: from.hi + (full.hi - from.hi) * u };
+        } else { st.raf = 0; stop(); st.t = tEnd; render(); return; }
+        render(); st.raf = requestAnimationFrame(f);
+      })(performance.now());
+    }
+    playB.addEventListener('click', function(){ if (st.raf) stop(); else if (st.w === 0) tour(); else { if (st.t >= wins[st.w].b) st.t = wins[st.w].a; play(); } });
     scrub.addEventListener('input', function(){ stop(); st.t = +scrub.value; render(); });
     wrap.addEventListener('click', function(e){
-      var z = e.target.closest('.lb-z'); if (z) { stop(); st.w = +z.getAttribute('data-w'); st.t = wins[st.w].a; play(); return; }
+      var z = e.target.closest('.lb-z'); if (z) { stop(); st.w = +z.getAttribute('data-w'); st.t = wins[st.w].a; if (st.w === 0) tour(); else play(); return; }
       var k = e.target.closest('[data-k]'); if (k && wrap.contains(k)) { var key = k.getAttribute('data-k'); st.hl = st.hl === key ? null : key; render(); }
     });
     function fromX(e){ var r = svg.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W, w = wins[st.w];
@@ -3329,7 +3379,7 @@ html.wir-open,html.wir-open body{overflow:hidden}
     svg.addEventListener('pointerdown', function(e){ if (!e.target.closest('[data-k]')) fromX(e); });
     svg.addEventListener('pointermove', function(e){ if (e.buttons || e.pointerType === 'touch') fromX(e); });
     render();
-    return { replay: function(){ st.w = 0; st.t = t0; play(); }, stop: stop };
+    return { replay: tour, stop: stop };
   }
   var lbPlayers = [];
   function lbInit(){ lbPlayers = []; Array.prototype.forEach.call(body.querySelectorAll('.lb-ov[data-ov]'), function(w){ var p = lbOv(w); if (p) lbPlayers.push(p); }); }
